@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <span>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="save">Save</button>
+    </span>
+    <div id="stabilometer"></div>
+    
+    <script>
+        var xg = 0.0;
+        var yg = 0.0;
+        var zg = 0.0;
+        var pre_x = 0.0;
+        var pre_y = 0.0;
+        let intervalId = 0;
+        let svg_area = document.getElementById("stabilometer");
+        var svg_data = '';
+        var counter = 0;
+        var res_text = '';
+        
+
+        window.addEventListener("devicemotion", (evt)=>{
+            xg = evt.accelerationIncludingGravity.x;
+            yg = evt.accelerationIncludingGravity.y;
+            zg = evt.accelerationIncludingGravity.z;    
+        });
+
+        document.getElementById("start").onclick = ()=>{
+            svg_data = '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">\n';
+            //svg_area.innerHTML = svg_data;
+            res_text = 'X\tY\n';
+            counter = 0;
+            intervalId = setInterval(() =>{
+                let crt_x = -xg * 20 + 100;
+                let crt_y = -zg * 20 + 100;
+                if (counter>200){
+                    svg_data += '    <line x1="' + pre_x + '" y1="' + pre_y + '" x2="' + crt_x + '" y2="' + crt_y + '" stroke="red"/>\n';
+                    svg_area.innerHTML = svg_data + '</svg>';
+                    res_text += crt_x.toFixed(2) + '\t' + crt_y.toFixed(2) + '\n';
+                }
+                pre_x = crt_x;
+                pre_y = crt_y;
+                counter ++;
+                if (counter>2600){
+                    clearInterval(intervalId);
+                } 
+            }, 25);
+        };
+
+        document.getElementById("stop").onclick = ()=>{
+            clearInterval(intervalId);
+        };
+
+        document.getElementById("save").onclick = ()=>{
+            let blob = new Blob([res_text], {type: 'text/plain'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.target = '_blank';
+            a.download = fname;
+            a.click();
+        };
+
+    </script>
+</body>
+</html>
