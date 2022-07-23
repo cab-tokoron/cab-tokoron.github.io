@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+
+        let video = document.createElement("video");
+        video.width = 640;
+        video.height = 480;
+        video.autoplay = true;
+        
+        let media = navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {facingMode: "user"}
+        }).then((stream)=>{
+            video.srcObject = stream;
+        }).catch((err)=>{
+            window.alert(err.name + ": " + err.message);
+        });
+
+        let canvas_fan = document.createElement("canvas");
+        let ctx_fan = canvas_fan.getContext("2d");
+
+        video.onloadedmetadata = (ev)=>{
+            canvas.width = 640;
+            canvas.height = 640;
+
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,640,640);
+
+            let timer = setInterval((e)=>{
+                createKaleidosopeImage(video);
+            }, 50);
+        };
+
+        const TO_RADIANS = Math.PI/180;
+        /**
+        * 回転させた画像を表示する
+        * @param {object} image - Imageオブジェクト
+        * @param {number} x - 画像の中心となるX座標
+        * @param {number} y - 画像の中心となるY座標
+        * @param {number} angle - 回転する角度[度]
+        */
+
+        const drawRotatedImage = (image, x, y, angle) => {
+            // コンテキストを保存する
+            ctx.save();
+            // 回転の中心に原点を移動する
+            ctx.translate(x, y);
+            // canvasを回転する
+            ctx.rotate(angle * TO_RADIANS);
+            // 画像サイズの半分だけずらして画像を描画する
+            //ctx.drawImage(image, -(image.width/2), -(image.height/2));
+            ctx.drawImage(image, 0, -image.height);
+            ctx.scale(1,-1);
+            ctx.drawImage(image, 0, -image.height);
+            // コンテキストを元に戻す
+            ctx.restore();
+        }
+        function createKaleidosopeImage(img){
+            canvas_fan.width=320;
+            canvas_fan.height=123;
+            ctx_fan.globalCompositeOperation = 'source-over';
+            ctx_fan.drawImage(img, -320, -240+123);
+            drawMask();
+            let png = canvas_fan.toDataURL();
+            let fan = new Image();
+            fan.src = png;
+            for (let i=0;i<8;i++){
+                drawRotatedImage(fan, 320, 320, 45*i);
+            }
+        }
+
+        function drawMask(){
+            ctx_fan.globalCompositeOperation = 'destination-in';
+            ctx_fan.beginPath();
+                ctx_fan.moveTo(0,123);
+                ctx_fan.lineTo(296,0);
+                ctx_fan.lineTo(319,123);
+            ctx_fan.closePath();
+            ctx_fan.fill();
+        }
+
+    </script>
+</body>
+</html>
