@@ -33,7 +33,7 @@
         graph_ctx.lineCap = "round";
         var dataX = document.getElementById("dataX");
         var dataZ = document.getElementById("dataZ");
-        
+        var fname = "";
         var counter = 0;
         var res_text = "";
         
@@ -48,6 +48,13 @@
         };
 
         document.getElementById("start").onclick = ()=>{
+            var date = new Date();
+            fname = date.getFullYear()
+                + ('0' + (date.getMonth() + 1)).slice(-2)
+                + ('0' + date.getDate()).slice(-2)
+                + ('0' + date.getHours()).slice(-2)
+                + ('0' + date.getMinutes()).slice(-2)
+                + ('0' + date.getSeconds()).slice(-2) + ".txt";
             
             res_text = 'X\tY\n';
             counter = 0;
