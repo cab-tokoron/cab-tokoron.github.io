@@ -92,17 +92,18 @@
             graph_ctx.lineWidth = 2;
             graph_ctx.fillStyle = "white";
             graph_ctx.fillRect(0,0,640,640);
+            graph_ctx.fill();
             graph_ctx.strokeStyle = "black";
             graph_ctx.strokeRect(20,20,600,600);
             for (let i=1;i<8;i++){
-                graph_ctx.moveTo(20+i*75, 0);
-                graph_ctx.lineTo(20+i*75, 620);
-                graph_ctx.moveTo(0,  20+i*75);
+                graph_ctx.moveTo(20+i*75, 20);
+                graph_ctx.lineTo(20+i*75,620);
+                graph_ctx.moveTo( 20,20+i*75);
                 graph_ctx.lineTo(620,20+i*75);
             }
+            graph_ctx.stroke();
             graph_ctx.fillRect(30,30,580,580);
             graph_ctx.fill();
-            graph_ctx.stroke();
             graph_ctx.strokeStyle = "red";
         }
 
