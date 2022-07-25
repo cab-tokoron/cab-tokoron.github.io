@@ -54,9 +54,9 @@
                 + ('0' + date.getDate()).slice(-2)
                 + ('0' + date.getHours()).slice(-2)
                 + ('0' + date.getMinutes()).slice(-2)
-                + ('0' + date.getSeconds()).slice(-2) + ".txt";
+                + ('0' + date.getSeconds()).slice(-2) + ".csv";
             
-            res_text = 'X\tY\n';
+            res_text = 'X,Y\n';
             counter = 0;
             intervalId = setInterval(() =>{
                 let crt_x = -xg * 40 + 320;
@@ -70,6 +70,7 @@
                     graph_ctx.lineTo(crt_x, crt_y);
                     graph_ctx.closePath();
                     graph_ctx.stroke();
+                    res += (crt_x.toFixed(4) + "," + crt_y.toFixed(4) + "\n"); 
                 }
                 pre_x = crt_x;
                 pre_y = crt_y;
