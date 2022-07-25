@@ -79,9 +79,11 @@
         function initGraph(){
             graph_area.width = 640;
             graph_area.height = 640;
+            graph_ctx.fillStyle = "white";
             graph_ctx.fillRect(0,0,640,640);
             graph_ctx.strokeStyle = "black";
-            graph_ctx.rect(20,20,600,600);
+            graph_ctx.strokeRect(20,20,600,600);
+            graph_ctx.strokeStyle = "red";
         }
 
     </script>
