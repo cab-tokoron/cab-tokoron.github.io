@@ -99,8 +99,8 @@
             for (let i=0;i<8;i++){
                 drawRotatedImage(fan, 320, 320, 45*i);
             }
-            //var img_data = back_ctx.getImageData(0,0,640,640);
-            ctx.putImageData(back_ctx.getImageData(0,0,640,640), 0, 0);
+            var img_data = back_ctx.getImageData(0,0,640,640);
+            ctx.putImageData(img_data, 0, 0);
         }
 
         function drawMask(){
