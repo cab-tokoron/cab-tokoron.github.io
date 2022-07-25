@@ -7,19 +7,36 @@
     <title>Document</title>
 </head>
 <body>
-    <span>
-        <button id="start"><img src="Start.png"/></button>
-        <button id="stop"><img src="Stop.png"/></button>
-        <button id="save"><img src="Save.png"/></button>
-    </span>
-    <span>
+    <div class="container">
+        <span>
+            <button id="start"><img src="Start.png"/></button>
+            <button id="stop"><img src="Stop.png"/></button>
+            <button id="save"><img src="Save.png"/></button>
+        </span>
+        <span>
+            <br/>
+                <div id="dataX">XG:</div>
+                <div id="dataZ">ZG:</div>
+            <br/>
+        </span>
         <div>
-            <div id="dataX">XG:</div>
-            <div id="dataZ">ZG:</div>
+            <canvas id="stabilometer"></canvas>
         </div>
-    <div><canvas id="stabilometer"></canvas></div>
+    </div>
     <!--div id="stabilometer"></div-->
-    
+    <css>
+        .container {
+            font-family: arial;
+            font-size: 24px;
+            margin: 25px;
+            width: 350px;
+            height: 200px;
+            outline: dashed 1px black;
+            /* 子要素を水平方向の中央に配置する */
+            display: flex;
+            justify-content: center;
+        }
+    </css>
     <script>
         var xg = 0.0;
         var yg = 0.0;
