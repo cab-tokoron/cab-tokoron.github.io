@@ -29,7 +29,6 @@
         let intervalId = 0;
         var graph_area = document.getElementById("stabilometer");
         var graph_ctx = graph_area.getContext("2d");
-        graph_ctx.lineWidth = 2;
         graph_ctx.lineJoin = "round";
         graph_ctx.lineCap = "round";
         var dataX = document.getElementById("dataX");
@@ -53,8 +52,8 @@
             res_text = 'X\tY\n';
             counter = 0;
             intervalId = setInterval(() =>{
-                let crt_x = -xg * 20 + 320;
-                let crt_y = -zg * 20 + 320;
+                let crt_x = -xg * 40 + 320;
+                let crt_y = -zg * 40 + 320;
                 dataX.innerHTML = "XG: " + xg.toFixed(4);
                 dataZ.innerHTML = "ZG: " + zg.toFixed(4);
                 
@@ -90,13 +89,21 @@
         function initGraph(){
             graph_area.width = 640;
             graph_area.height = 640;
+            graph_ctx.lineWidth = 2;
             graph_ctx.fillStyle = "white";
             graph_ctx.fillRect(0,0,640,640);
             graph_ctx.strokeStyle = "black";
             graph_ctx.strokeRect(20,20,600,600);
-            graph_ctx.strokeStyle = "red";
+            for (let i=1;i<8;i++){
+                graph_ctx.moveTo(20+i*75, 0);
+                graph_ctx.lineTo(20+i*75, 620);
+                graph_ctx.moveTo(0,  20+i*75);
+                graph_ctx.lineTo(620,20+i*75);
+            }
+            graph_ctx.fillRect(30,30,580,580);
             graph_ctx.fill();
             graph_ctx.stroke();
+            graph_ctx.strokeStyle = "red";
         }
 
     </script>
