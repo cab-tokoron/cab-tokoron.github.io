@@ -13,8 +13,10 @@
         <button id="save">Save</button>
     </span>
     <span>
-        <div id="dataX">XG:</div>
-        <div id="dataZ">ZG:</div>
+        <div>
+            <div id="dataX">XG:</div>
+            <div id="dataZ">ZG:</div>
+        </div>
     <div><canvas id="stabilometer"></canvas></div>
     <!--div id="stabilometer"></div-->
     
@@ -53,8 +55,8 @@
             intervalId = setInterval(() =>{
                 let crt_x = -xg * 20 + 320;
                 let crt_y = -zg * 20 + 320;
-                dataX.innerHTML = "XG: " + xg;
-                dataY.innerHTML = "ZG: " + zg;
+                dataX.innerHTML = "XG: " + xg.toFixed(4);
+                dataZ.innerHTML = "ZG: " + zg.toFixed(4);
                 
                 if (counter>200){
                     graph_ctx.beginPath();
