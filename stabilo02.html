@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <span>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="save">Save</button>
+    </span>
+    <div><canvas id="stabilometer"></canvas></div>
+    <!--div id="stabilometer"></div-->
+    
+    <script>
+        var xg = 0.0;
+        var yg = 0.0;
+        var zg = 0.0;
+        var pre_x = 0.0;
+        var pre_y = 0.0;
+        let intervalId = 0;
+        var graph_area = document.getElementById("stabilometer");
+        var graph_ctx = graph_area.getContext("2d");
+        graph_ctx.fillStyle = "white";
+        graph_ctx.lineWidth = 2;
+        graph_ctx.lineJoin = "round";
+        graph_ctx.lineCap = "round";
+        graph_ctx.strokeStyle = "blue";
+
+        var counter = 0;
+        var res_text = "";
+        
+        window.onload = ()=>{
+            initGraph();
+        };
+
+        window.ondevicemotion = (evt)=>{
+            xg = evt.accelerationIncludingGravity.x;
+            yg = evt.accelerationIncludingGravity.y;
+            zg = evt.accelerationIncludingGravity.z;    
+        };
+
+        document.getElementById("start").onclick = ()=>{
+            
+            res_text = 'X\tY\n';
+            counter = 0;
+            intervalId = setInterval(() =>{
+                let crt_x = -xg * 20 + 320;
+                let crt_y = -zg * 20 + 320;
+                if (counter>200){
+                    graph_ctx.moveTo(pre_x, pre_y);
+                    graph_ctx.lineTo(crt_x, crt_y);
+                }
+                pre_x = crt_x;
+                pre_y = crt_y;
+                counter ++;
+                if (counter>2600){
+                    clearInterval(intervalId);
+                } 
+            }, 25);
+        };
+
+        document.getElementById("stop").onclick = ()=>{
+            clearInterval(intervalId);
+        };
+
+        document.getElementById("save").onclick = ()=>{
+            let blob = new Blob([res_text], {type: 'text/plain'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.target = '_blank';
+            a.download = fname;
+            a.click();
+        };
+
+        function initGraph(){
+            graph_area.width = 640;
+            graph_area.height = 640;
+            graph_ctx.fillRect(0,0,640,640);
+            graph_ctx.strokeStyle = "black";
+            graph_ctx.rect(20,20,600,600);
+        }
+
+    </script>
+</body>
+</html>
