@@ -12,6 +12,9 @@
         <button id="stop">Stop</button>
         <button id="save">Save</button>
     </span>
+    <span>
+        <div id="dataX">XG:</div>
+        <div id="dataZ">ZG:</div>
     <div><canvas id="stabilometer"></canvas></div>
     <!--div id="stabilometer"></div-->
     
@@ -27,6 +30,8 @@
         graph_ctx.lineWidth = 2;
         graph_ctx.lineJoin = "round";
         graph_ctx.lineCap = "round";
+        var dataX = document.getElementById("dataX");
+        var dataZ = document.getElementById("dataZ");
         
         var counter = 0;
         var res_text = "";
@@ -48,6 +53,9 @@
             intervalId = setInterval(() =>{
                 let crt_x = -xg * 20 + 320;
                 let crt_y = -zg * 20 + 320;
+                dataX.innerHTML = "XG: " + xg;
+                dataY.innerHTML = "ZG: " + zg;
+                
                 if (counter>200){
                     graph_ctx.beginPath();
                     graph_ctx.moveTo(pre_x, pre_y);
