@@ -14,27 +14,29 @@
             height: 200px;
             outline: dashed 1px black;
             /* 子要素を水平方向の中央に配置する */
-            display: flex;
+            // display: flex;
             justify-content: center;
         }
         .graph {
-            width: 80vw;
+            width: 70vw;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <span>
-            <button id="start"><img src="Start.png"/></button>
-            <button id="stop"><img src="Stop.png"/></button>
-            <button id="save"><img src="Save.png"/></button>
-        </span>
-        <span>
+        <div>
+            <span>
+                <button id="start"><img src="Start.png"/></button>
+                <button id="stop"><img src="Stop.png"/></button>
+                <button id="save"><img src="Save.png"/></button>
+            </span>
+        </div>
+        <div>
             <br/>
-                <div id="dataX">XG:</div>
-                <div id="dataZ">ZG:</div>
+            <span id="dataX">XG:</span>
+            <span id="dataZ">ZG:</span>
             <br/>
-        </span>
+        </div>
         <div>
             <canvas class="graph" id="stabilometer"></canvas>
         </div>
