@@ -64,38 +64,28 @@
             deviceMotionRequest();
             initGraph();
         };
-
-        function deviceMotionRequest () {
-            if (DeviceMotionEvent.requestPermission) {
+        
+        function deviceMotionRequest() {
+            if (DeviceMotionEvent.requestPermission){
                 DeviceMotionEvent.requestPermission()
-                    .then(permissionState => {
-                        if (permissionState === 'granted') {
-                            window.addEventListener("devicemotion", function (event) {
-                                if (!event.accelerationIncludingGravity) {
-                                    alert('event.accelerationIncludingGravity is null');
-                                    return;
-                                }
-                                xg = evt.accelerationIncludingGravity.x;
-                                yg = evt.accelerationIncludingGravity.y;
-                                zg = evt.accelerationIncludingGravity.z;    
-
-                                //document.getElementById('x').innerHTML = event.accelerationIncludingGravity.x;
-                                //document.getElementById('y').innerHTML = event.accelerationIncludingGravity.y;
-                                //document.getElementById('z').innerHTML = event.accelerationIncludingGravity.z;
-                            })
-                        }
+                .then(permissionState => {
+                    if (permissionState == "granted"){
+                        window.ondevicemotion = (event)=>{
+                            if (!event.accelerationIncludingGravity){
+                                alert("event.accelerationIncludingGravity is null");
+                                return;
+                            }
+                            xg = event.accelerationIncludingGravity.x;
+                            yg = event.accelerationIncludingGravity.y;
+                            zg = event.accelerationIncludingGravity.z;
+                        };
                     })
-                    .catch(console.error);
-            } else {
-                alert('DeviceMotionEvent.requestPermission is not found')
+                .catch(console.error);
+            }
+            else{
+                alert('DeviceMotionEvent.requestPermission is not found');
             }
         }
-        
-        //window.ondevicemotion = (evt)=>{
-        //    xg = evt.accelerationIncludingGravity.x;
-        //    yg = evt.accelerationIncludingGravity.y;
-        //    zg = evt.accelerationIncludingGravity.z;    
-        //};
         
         document.getElementById("start").onclick = ()=>{
             var date = new Date();
