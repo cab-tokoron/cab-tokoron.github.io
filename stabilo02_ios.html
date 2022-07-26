@@ -39,8 +39,7 @@
             <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
         </div>
     </div>
-    <h3 style="font-family: sans-serif; margin: 10px;" id="stopwatch"></h3>
-    <!--div id="stabilometer"></div-->
+    <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
 
     <script>
         var xg = 0.0;
@@ -65,17 +64,45 @@
             initGraph();
         };
 
-                         
-                         
-        window.ondevicemotion = (evt)=>{
-            xg = evt.accelerationIncludingGravity.x;
-            yg = evt.accelerationIncludingGravity.y;
-            zg = evt.accelerationIncludingGravity.z;    
-        };
+        function deviceMotionRequest () {
+            if (DeviceMotionEvent.requestPermission) {
+                DeviceMotionEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener("devicemotion", function (event) {
+                                if (!event.accelerationIncludingGravity) {
+                                    alert('event.accelerationIncludingGravity is null');
+                                    return;
+                                }
+                                xg = evt.accelerationIncludingGravity.x;
+                                yg = evt.accelerationIncludingGravity.y;
+                                zg = evt.accelerationIncludingGravity.z;    
 
+                                //document.getElementById('x').innerHTML = event.accelerationIncludingGravity.x;
+                                //document.getElementById('y').innerHTML = event.accelerationIncludingGravity.y;
+                                //document.getElementById('z').innerHTML = event.accelerationIncludingGravity.z;
+                            })
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                alert('DeviceMotionEvent.requestPermission is not found')
+            }
+        }
+        
+        //window.ondevicemotion = (evt)=>{
+        //    xg = evt.accelerationIncludingGravity.x;
+        //    yg = evt.accelerationIncludingGravity.y;
+        //    zg = evt.accelerationIncludingGravity.z;    
+        //};
+        
+        window.onload = ()=>{
+            deviceMotionRequest();
+        };
+        
         document.getElementById("start").onclick = ()=>{
             var date = new Date();
-            fname = date.getFullYear()
+            fname = "Stabilometer_" + date.getFullYear()
                 + ('0' + (date.getMonth() + 1)).slice(-2)
                 + ('0' + date.getDate()).slice(-2)
                 + ('0' + date.getHours()).slice(-2)
@@ -89,13 +116,13 @@
             intervalId = setInterval(() =>{
                 let crt_x = -xg * 40 + 320;
                 let crt_y = -zg * 40 + 320;
-                gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" 
-                //dataX.innerHTML = "XG: " + xg.toFixed(4);
-                //dataZ.innerHTML = "ZG: " + zg.toFixed(4);
+                gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
+
                 if (counter%40==0){
-                    stopwatch.innerHTML = String(countup);
+                    stopwatch.innerHTML = "Countup: " + String(countup);
                     countup += 1;
                 }
+                
                 if (counter>200){
                     graph_ctx.beginPath();
                     graph_ctx.moveTo(pre_x, pre_y);
@@ -109,7 +136,7 @@
                 counter ++;
                 if (counter>2600){
                     clearInterval(intervalId);
-                    stopwatch.innerHTML = "Finished!";
+                    stopwatch.innerHTML = "Measurement: Finished! (countup: " + String(countup-1) + ")";
                 } 
             }, 25);
         };
