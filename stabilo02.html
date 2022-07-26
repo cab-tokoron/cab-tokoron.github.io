@@ -6,21 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .container {
-            font-family: arial;
-            font-size: 24px;
-            margin: 25px;
-            width: 350px;
-            height: 200px;
-            outline: dashed 1px black;
-            /* 子要素を水平方向の中央に配置する */
-            // display: flex;
-            justify-content: center;
-        }
-        .graph {
-            width: 70vw;
-        }
         .btn-sticky {
+            font-family: sans-serif;
             display: inline-block;
             padding: 0.5em 1em;
             text-decoration: none;
@@ -37,7 +24,7 @@
     </style>
 </head>
 <body>
-    <h>STABILOMETER</h>
+    <h2 style="font-family: sans-serif">STABILOMETER</h2>
     <div style="justify-content: center">
         <div>
             <canvas id="stabilometer" style="width: 100vw"></canvas>
@@ -105,7 +92,7 @@
                     graph_ctx.lineTo(crt_x, crt_y);
                     graph_ctx.closePath();
                     graph_ctx.stroke();
-                    res += (crt_x.toFixed(4) + "," + crt_y.toFixed(4) + "\n"); 
+                    res_text += (crt_x.toFixed(4) + "," + crt_y.toFixed(4) + "\n"); 
                 }
                 pre_x = crt_x;
                 pre_y = crt_y;
