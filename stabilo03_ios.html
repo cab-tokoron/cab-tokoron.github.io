@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>STABILOMETER</title>
+    <style>
+        .btn-sticky {
+            font-family: sans-serif;
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #f7f7f7;
+            border-left: solid 6px #ff7c5c;/*左線*/
+            color: #ff7c5c;/*文字色*/
+            font-weight: bold;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+        }
+        .btn-sticky:active {
+            box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+    <h2 style="font-family: sans-serif; margin: 5px;">STABILOMETER</h2>
+    <div>
+        <div>
+            <canvas id="stabilometer" style="width: 90vw; display: flex; justify-content: center;"></canvas>
+        </div>
+
+        <div style="width: 100vw; display: flex; justify-content: center;">
+            <span><a href="#" class="btn-sticky" id="connect">DEV.</a></span>
+            <span><a href="#" class="btn-sticky" id="start">START</a></span>
+            <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
+            <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
+        </div>
+        <div>
+            <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
+        </div>
+    </div>
+    <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
+    <!--a id="downloadlink"></a-->
+
+    <script>
+        var xg = 0.0;
+        var yg = 0.0;
+        var zg = 0.0;
+        var pre_x = 0.0;
+        var pre_y = 0.0;
+        let intervalId = 0;
+        var graph_area = document.getElementById("stabilometer");
+        var graph_ctx = graph_area.getContext("2d");
+        graph_ctx.lineJoin = "round";
+        graph_ctx.lineCap = "round";
+        var gravity = document.getElementById("gravityData");
+        var stopwatch = document.getElementById("stopwatch");
+        let save  = document.getElementById("save");
+        let start = document.getElementById("start");
+        let stop  = document.getElementById("stop");
+        var fname = "";
+        var counter = 0;
+        var countup = -5;
+        var res_text = "";
+        
+        document.getElementById("connect").onclick = ()=>{
+            deviceMotionRequest();
+        };
+        
+        window.onload = ()=>{
+            //deviceMotionRequest();
+            initGraph();
+        };
+        
+        function deviceMotionRequest() {
+            if (DeviceMotionEvent.requestPermission) {
+                DeviceMotionEvent.requestPermission()
+                .then(permissionState => {
+                    if (permissionState === 'granted') {
+                        window.addEventListener("devicemotion", function (event) {
+                            if (!event.accelerationIncludingGravity) {
+                                alert('event.accelerationIncludingGravity is null');
+                                return;
+                            }
+                            start.onclick = measureStart;
+                            stop.onclick = measureStop;
+                            xg = event.accelerationIncludingGravity.x;
+                            yg = event.accelerationIncludingGravity.y;
+                            zg = event.accelerationIncludingGravity.z;
+                            //document.getElementById('x').innerHTML = event.accelerationIncludingGravity.x;
+                            //document.getElementById('y').innerHTML = event.accelerationIncludingGravity.y;
+                            //document.getElementById('z').innerHTML = event.accelerationIncludingGravity.z;
+                        })
+                    }
+                })
+                .catch(console.error);
+            }
+            else {
+                alert('DeviceMotionEvent.requestPermission is not found');
+            }
+        }
+        
+        function measureStart(){
+            var date = new Date();
+            fname = "Stabilometer_" + date.getFullYear()
+                + ('0' + (date.getMonth() + 1)).slice(-2)
+                + ('0' + date.getDate()).slice(-2)
+                + ('0' + date.getHours()).slice(-2)
+                + ('0' + date.getMinutes()).slice(-2)
+                + ('0' + date.getSeconds()).slice(-2) + ".csv";
+            
+            res_text = 'X,Y\n';
+            counter = 0;
+            countup = -5;
+            save.href = "#";
+            
+            intervalId = setInterval(() =>{
+                let crt_x = -xg * 40 + 320;
+                let crt_y = -zg * 40 + 320;
+                gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
+
+                if (counter%40==0){
+                    stopwatch.innerHTML = "Countup: " + String(countup);
+                    countup += 1;
+                }
+                
+                if (counter>200){
+                    graph_ctx.beginPath();
+                    graph_ctx.moveTo(pre_x, pre_y);
+                    graph_ctx.lineTo(crt_x, crt_y);
+                    graph_ctx.closePath();
+                    graph_ctx.stroke();
+                    res_text += (crt_x.toFixed(4) + "," + crt_y.toFixed(4) + "\n"); 
+                }
+                pre_x = crt_x;
+                pre_y = crt_y;
+                counter ++;
+                if (counter>2600){
+                    clearInterval(intervalId);
+                    stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
+                    let blob = new Blob([res_text], {type: 'text/plain'});
+                    save.href = URL.createObjectURL(blob);
+                    //save.innerHTML = "download data";
+                    save.target = '_blank';
+                    save.download = fname;
+                } 
+            }, 25);
+        };
+
+        function measureStop() {
+            clearInterval(intervalId);
+        };
+
+        /*
+        save.onclick = ()=>{
+            let blob = new Blob([res_text], {type: 'text/plain'});
+            //let a = document.createElement('a');
+            let a = document.getElementById("downloadlink");
+            a.href = URL.createObjectURL(blob);
+            a.innerHTML = "download data";
+            a.target = '_blank';
+            a.download = fname;
+            //a.click();
+        };
+        */
+        
+        function initGraph(){
+            graph_area.width = 640;
+            graph_area.height = 640;
+            graph_ctx.lineWidth = 2;
+            graph_ctx.fillStyle = "white";
+            graph_ctx.fillRect(0,0,640,640);
+            graph_ctx.fill();
+            graph_ctx.strokeStyle = "black";
+            graph_ctx.strokeRect(20,20,600,600);
+            for (let i=1;i<8;i++){
+                graph_ctx.moveTo(20+i*75, 20);
+                graph_ctx.lineTo(20+i*75,620);
+                graph_ctx.moveTo( 20,20+i*75);
+                graph_ctx.lineTo(620,20+i*75);
+            }
+            graph_ctx.stroke();
+            graph_ctx.fillRect(30,30,580,580);
+            graph_ctx.fill();
+            graph_ctx.strokeStyle = "red";
+        }
+
+    </script>
+</body>
+</html>
