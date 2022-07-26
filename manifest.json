@@ -1,6 +1,6 @@
 {
-  "name": "PWA Video control",
-  "short_name": "VideoCtrl",
+  "name": "PWA Stabilometer",
+  "short_name": "Stabilometer",
   "background_color": "#fc980c",
   "icons": [{
       "src": "./icon-256.png",
