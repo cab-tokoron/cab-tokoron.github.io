@@ -20,6 +20,20 @@
         .graph {
             width: 70vw;
         }
+        .btn-sticky {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #f7f7f7;
+            border-left: solid 6px #ff7c5c;/*左線*/
+            color: #ff7c5c;/*文字色*/
+            font-weight: bold;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+        }
+        .btn-sticky:active {
+            box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+            transform: translateY(2px);
+        }
     </style>
 </head>
 <body>
@@ -30,9 +44,9 @@
         </div>
 
         <div>
-            <span><button id="start"><img src="Start.png" style="width: 25vw"/></button></span>
-            <span><button id="stop"><img src="Stop.png" style="width: 25vw"/></button></span>
-            <span><button id="save"><img src="Save.png" style="width: 25vw"/></button></span>
+            <span><a href="#" class="btn-sticky" id="start">START</a></span>
+            <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
+            <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
         </div>
         <div>
             <div id="dataX">XG:</div>
