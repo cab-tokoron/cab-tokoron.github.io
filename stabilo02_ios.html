@@ -32,6 +32,7 @@
         </div>
 
         <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
+            <span><a href="#" class="btn-sticky" id="connect">CONNECT</a></span>
             <span><a href="#" class="btn-sticky" id="start">START</a></span>
             <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
             <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
@@ -41,6 +42,7 @@
         </div>
     </div>
     <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
+    <a id="downloadlink"></a>
 
     <script>
         var xg = 0.0;
@@ -61,8 +63,12 @@
         var countup = -5;
         var res_text = "";
         
-        window.onload = ()=>{
+        document.getElementById("connect).onclick = ()=>{
             deviceMotionRequest();
+        };
+        
+        window.onload = ()=>{
+            //deviceMotionRequest();
             initGraph();
         };
         
@@ -139,11 +145,12 @@
 
         document.getElementById("save").onclick = ()=>{
             let blob = new Blob([res_text], {type: 'text/plain'});
-            let a = document.createElement('a');
+            //let a = document.createElement('a');
+            let a = document.getElementById("downloadlink");
             a.href = URL.createObjectURL(blob);
             a.target = '_blank';
             a.download = fname;
-            a.click();
+            //a.click();
         };
 
         function initGraph(){
