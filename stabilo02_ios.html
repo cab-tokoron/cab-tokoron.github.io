@@ -61,6 +61,7 @@
         var res_text = "";
         
         window.onload = ()=>{
+            deviceMotionRequest();
             initGraph();
         };
 
@@ -95,10 +96,6 @@
         //    yg = evt.accelerationIncludingGravity.y;
         //    zg = evt.accelerationIncludingGravity.z;    
         //};
-        
-        window.onload = ()=>{
-            deviceMotionRequest();
-        };
         
         document.getElementById("start").onclick = ()=>{
             var date = new Date();
