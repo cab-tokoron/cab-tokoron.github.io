@@ -107,7 +107,7 @@
                 counter ++;
                 if (counter>2600){
                     clearInterval(intervalId);
-                    stopwatch.innerHTML = "Measurement: Finished! (countup: " + String(countup) + ")";
+                    stopwatch.innerHTML = "Measurement: Finished! (countup: " + String(countup-1) + ")";
                 } 
             }, 25);
         };
