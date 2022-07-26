@@ -91,8 +91,8 @@
                 //dataX.innerHTML = "XG: " + xg.toFixed(4);
                 //dataZ.innerHTML = "ZG: " + zg.toFixed(4);
                 if (counter%40==0){
-                    stopwatch.innerHTML = countup;
-                    countup ++;
+                    stopwatch.innerHTML = String(countup);
+                    countup += 1;
                 }
                 if (counter>200){
                     graph_ctx.beginPath();
