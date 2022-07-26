@@ -35,7 +35,7 @@
             <span><a href="#" class="btn-sticky" id="connect">DEV.</a></span>
             <span><a href="#" class="btn-sticky" id="start">START</a></span>
             <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
-            <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
+            <!--span><a href="#" class="btn-sticky" id="save">SAVE</a></span-->
         </div>
         <div>
             <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
@@ -57,7 +57,7 @@
         graph_ctx.lineCap = "round";
         var gravity = document.getElementById("gravityData");
         var stopwatch = document.getElementById("stopwatch");
-                                                           
+        let a = document.getElementById("downloadlink");                                                   
         var fname = "";
         var counter = 0;
         var countup = -5;
@@ -110,7 +110,8 @@
             res_text = 'X,Y\n';
             counter = 0;
             countup = -5;
-                                   
+            a.innerHTML = "";
+            
             intervalId = setInterval(() =>{
                 let crt_x = -xg * 40 + 320;
                 let crt_y = -zg * 40 + 320;
@@ -134,7 +135,15 @@
                 counter ++;
                 if (counter>2600){
                     clearInterval(intervalId);
-                    stopwatch.innerHTML = "Measurement: Finished! (countup: " + String(countup-1) + ")";
+                    stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
+                    let blob = new Blob([res_text], {type: 'text/plain'});
+                    //let a = document.createElement('a');
+                    
+                    a.href = URL.createObjectURL(blob);
+                    a.innerHTML = "download data";
+                    a.target = '_blank';
+                    a.download = fname;
+
                 } 
             }, 25);
         };
@@ -143,7 +152,7 @@
             clearInterval(intervalId);
         };
 
-        document.getElementById("save").onclick = ()=>{
+        /*document.getElementById("save").onclick = ()=>{
             let blob = new Blob([res_text], {type: 'text/plain'});
             //let a = document.createElement('a');
             let a = document.getElementById("downloadlink");
@@ -153,7 +162,8 @@
             a.download = fname;
             //a.click();
         };
-
+        */
+        
         function initGraph(){
             graph_area.width = 640;
             graph_area.height = 640;
