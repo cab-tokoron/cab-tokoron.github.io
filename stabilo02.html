@@ -39,7 +39,7 @@
             <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
         </div>
     </div>
-    <h3 style="font-family: sans-serif; margin: 10px;" id="stopwatch"></h3>
+    <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
     <!--div id="stabilometer"></div-->
 
     <script>
@@ -73,7 +73,7 @@
 
         document.getElementById("start").onclick = ()=>{
             var date = new Date();
-            fname = date.getFullYear()
+            fname = "Stabilometer_" + date.getFullYear()
                 + ('0' + (date.getMonth() + 1)).slice(-2)
                 + ('0' + date.getDate()).slice(-2)
                 + ('0' + date.getHours()).slice(-2)
@@ -90,7 +90,7 @@
                 gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
 
                 if (counter%40==0){
-                    stopwatch.innerHTML = String(countup);
+                    stopwatch.innerHTML = "Countup: " + String(countup);
                     countup += 1;
                 }
                 
@@ -107,7 +107,7 @@
                 counter ++;
                 if (counter>2600){
                     clearInterval(intervalId);
-                    stopwatch.innerHTML = "Finished!";
+                    stopwatch.innerHTML = "Measurement: Finished! (countup: " + String(countup) + ")";
                 } 
             }, 25);
         };
