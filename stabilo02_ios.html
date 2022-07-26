@@ -32,7 +32,7 @@
         </div>
 
         <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
-            <span><a href="#" class="btn-sticky" id="connect">CONNECT</a></span>
+            <span><a href="#" class="btn-sticky" id="connect">DEV.</a></span>
             <span><a href="#" class="btn-sticky" id="start">START</a></span>
             <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
             <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
@@ -63,7 +63,7 @@
         var countup = -5;
         var res_text = "";
         
-        document.getElementById("connect).onclick = ()=>{
+        document.getElementById("connect").onclick = ()=>{
             deviceMotionRequest();
         };
         
@@ -148,6 +148,7 @@
             //let a = document.createElement('a');
             let a = document.getElementById("downloadlink");
             a.href = URL.createObjectURL(blob);
+            a.innerHTML = "download data";
             a.target = '_blank';
             a.download = fname;
             //a.click();
