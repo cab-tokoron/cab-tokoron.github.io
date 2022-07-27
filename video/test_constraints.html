@@ -23,7 +23,7 @@
                 if (item.kind === "videoinput") {
                     const deviceId = item.deviceId;
                     const label = item.label;
-                    devicelist.innerHTML += (String(deviceId) + ": " + String(label));
+                    devicelist.innerHTML += (String(deviceId) + ": " + String(label) + "\n");
                     // NOTE: ここでデバイスID（とラベル）を適当な変数に保存しておく
                     cameraDeviceIds.push({ deviceId, label });
                 }
