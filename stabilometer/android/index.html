@@ -69,6 +69,7 @@
         graph_ctx.lineCap = "round";
         var gravity = document.getElementById("gravityData");
         var stopwatch = document.getElementById("stopwatch");
+        let save = document.getElementById("save");
                                                            
         var fname = "";
         var counter = 0;
@@ -97,6 +98,7 @@
             res_text = 'X,Y\n';
             counter = 0;
             countup = -5;
+            save.href = "#"
                                    
             intervalId = setInterval(() =>{
                 let crt_x = -xg * 40 + 320;
@@ -121,7 +123,11 @@
                 counter ++;
                 if (counter>2600){
                     clearInterval(intervalId);
-                    stopwatch.innerHTML = "Measurement: Finished! (countup: " + String(countup-1) + ")";
+                    stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
+                    let blob = new Blob([res_text], {type: 'text/plain'});
+                    save.href = URL.createObjectURL(blob);
+                    save.target = '_blank';
+                    save.download = fname;
                 } 
             }, 25);
         };
@@ -130,6 +136,7 @@
             clearInterval(intervalId);
         };
 
+        /*
         document.getElementById("save").onclick = ()=>{
             let blob = new Blob([res_text], {type: 'text/plain'});
             let a = document.createElement('a');
@@ -138,6 +145,7 @@
             a.download = fname;
             a.click();
         };
+        */
 
         function initGraph(){
             graph_area.width = 640;
