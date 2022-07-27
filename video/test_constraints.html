@@ -7,28 +7,41 @@
     <title>Document</title>
 </head>
 <body>
-    <ol id="constraintList"></ol>
-    <ol id="facingModeList"></ol>
-    <script>
-        let constraintList = document.getElementById("constraintList");
-        let facingModeList = document.getElementById("facingModeList");
-        let supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
-        
-        for (let constraint in supportedConstraints) {
-            if (supportedConstraints.hasOwnProperty(constraint)) {
-                let elem = document.createElement("li");
+    <video id="video" style="width: 100%; max-width: 1280px;" autoplay></video>
 
-                elem.innerHTML = "<code>" + constraint + "</code>";
-                constraintList.appendChild(elem);
+    <script>
+        //
+        // WebカメラのデバイスIDの一覧を取得
+        //
+        const cameraDeviceIds = [/* { deviceId, label } */];
+        navigator.mediaDevices.enumerateDevices().then(function(mediaDevices) {
+            for (let len = mediaDevices.length, i = 0; i < len; i++) {
+                const item = mediaDevices[i];
+                // NOTE: カメラデバイスの場合、 kind プロパティには "videoinput" が入っている:
+                if (item.kind === "videoinput") {
+                    const deviceId = item.deviceId;
+                    const label = item.label;
+                    // NOTE: ここでデバイスID（とラベル）を適当な変数に保存しておく
+                    cameraDeviceIds.push({ deviceId, label });
+                }
             }
-        }
-        for (let facingMode in supportedConstraints.facingMode){
-            if (supportedConstraints.hasOwnProperty(facingMode)) {
-                let elem = document.createElement("li");
-                elem.innerHTML = "<code>" + facingMode + "</code>";
-                facingModeList.appendChild(elem);
-            }
-        }
+        });
+    
+        //
+        // Webカメラを選択
+        //
+        const video = document.getElementById("video");
+        navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+                // ここにカメラのデバイスIDをセット(ここではindex:0のカメラデバイスをセットしました):
+                deviceId: cameraDeviceIds[0],
+            },
+        }).then(function(stream) {
+            video.srcObject = stream;
+        }).catch(function(e) {
+            alert("ERROR: Webカメラの起動に失敗しました: " + e.message);
+        });
     </script>
 </body>
 </html>
