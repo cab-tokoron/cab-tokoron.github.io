@@ -8,8 +8,10 @@
 </head>
 <body>
     <ol id="constraintList"></ol>
+    <ol id="facingModeList"></ol>
     <script>
         let constraintList = document.getElementById("constraintList");
+        let facingModeList = document.getElementById("facingModeList");
         let supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
         
         for (let constraint in supportedConstraints) {
@@ -18,6 +20,13 @@
 
                 elem.innerHTML = "<code>" + constraint + "</code>";
                 constraintList.appendChild(elem);
+            }
+        }
+        for (let facingMode in supportedConstraints.facingMode){
+            if (supportedConstraints.hasOwnProperty(facingMode)) {
+                let elem = document.createElement("li");
+                elem.innerHTML = "<code>" + facingMode + "</code>";
+                facingModeList.appendChild(elem);
             }
         }
     </script>
