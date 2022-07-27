@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ol id="constraintList"></ol>
+    <script>
+        let constraintList = document.getElementById("constraintList");
+        let supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+        
+        for (let constraint in supportedConstraints) {
+            if (supportedConstraints.hasOwnProperty(constraint)) {
+                let elem = document.createElement("li");
+
+                elem.innerHTML = "<code>" + constraint + "</code>";
+                constraintList.appendChild(elem);
+            }
+        }
+    </script>
+</body>
+</html>
