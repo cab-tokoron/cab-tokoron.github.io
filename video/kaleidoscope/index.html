@@ -17,6 +17,7 @@
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <video id="video" playsinline autoplay hidden></video>
     <script>
 
         let canvas = document.getElementById("canvas");
@@ -31,10 +32,10 @@
             //}
         }
 
-        var video = document.createElement("video");
-        video.width = 640;
-        video.height = 480;
-        video.autoplay = true;
+        //var video = document.createElement("video");
+        //video.width = 640;
+        //video.height = 480;
+        //video.autoplay = true;
         
         navigator.mediaDevices.getUserMedia(constraints)
         .then((stream)=>{
