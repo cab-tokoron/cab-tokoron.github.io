@@ -63,12 +63,6 @@
             //}, 50);
         };
         
-        const canvasUpdate = ()=>{
-            createKaleidoscopeImage(video);
-            window.requestAnimationFrame(canvasUpdate);
-        };
-
-        canvasUpdate();
 
         const TO_RADIANS = Math.PI/180;
         /**
@@ -120,6 +114,13 @@
             ctx_fan.closePath();
             ctx_fan.fill();
         }
+
+        const canvasUpdate = ()=>{
+            createKaleidoscopeImage(video);
+            window.requestAnimationFrame(canvasUpdate);
+        };
+
+        canvasUpdate();
 
     </script>
 </body>
