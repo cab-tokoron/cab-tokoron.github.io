@@ -15,8 +15,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
-    <canvas id="canvas"></canvas>
+<body>  
+    <canvas id="canvas" width="640" height="640"></canvas>
     <video id="video" hidden></video>
     <script>
 
@@ -52,8 +52,8 @@
         var back_ctx = back_canvas.getContext("2d");
 
         video.onloadedmetadata = (ev)=>{
-            canvas.width = 640;
-            canvas.height = 640;
+            //canvas.width = 640;
+            //canvas.height = 640;
             back_canvas.width = 640;
             back_canvas.height = 640;
 
