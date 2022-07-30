@@ -62,14 +62,14 @@
             //    createKaleidosopeImage(video);
             //}, 50);
         };
-
-        canvasUpdate();
         
         const canvasUpdate = ()=>{
             createKaleidoscopeImage(video);
             window.requestAnimationFrame(canvasUpdate);
         };
-        
+
+        canvasUpdate();
+
         const TO_RADIANS = Math.PI/180;
         /**
         * 回転させた画像を表示する
