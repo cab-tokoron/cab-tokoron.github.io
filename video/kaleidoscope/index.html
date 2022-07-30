@@ -18,10 +18,13 @@
 <body>  
     <canvas id="canvas" width="640" height="640"></canvas>
     <video id="video" hidden></video>
+    <div id="info"></div>
     <script>
 
         let canvas = document.getElementById("canvas");
         let ctx = canvas.getContext("2d");
+        let info = document.getElementById("info");
+
         let constraints = {
             audio: false,
             video: true,
@@ -56,7 +59,7 @@
             //canvas.height = 640;
             //back_canvas.width = 640;
             //back_canvas.height = 640;
-
+            info.innerHTML = "Video size (w x h): " + String(video.width) + " x " + String(video.height);
             ctx.fillStyle = "black";
             ctx.fillRect(0,0,640,640);
             //back_ctx.fillStyle = "black";
