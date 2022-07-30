@@ -96,6 +96,8 @@
         function createKaleidosopeImage(img){
             canvas_fan.width=320;
             canvas_fan.height=123;
+            back_canvas.width = 640;
+            back_canvas.height = 640;
             ctx_fan.globalCompositeOperation = 'source-over';
             ctx_fan.drawImage(img, -320, -240+123);
             drawMask();
