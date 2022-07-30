@@ -23,11 +23,12 @@
         let ctx = canvas.getContext("2d");
         let constraints = {
             audio: false,
-            video: {
-                facingMode: "user", 
-                width: {ideal: 640}, 
-                height: {ideal: 480}
-            }
+            video: true,
+            //video: {
+            //    facingMode: "user", 
+            //    width: {ideal: 640}, 
+            //    height: {ideal: 480}
+            //}
         }
 
         var video = document.createElement("video");
@@ -35,7 +36,7 @@
         video.height = 480;
         video.autoplay = true;
         
-        window.navigator.mediaDevices.getUserMedia(constraints)
+        navigator.mediaDevices.getUserMedia(constraints)
         .then((stream)=>{
             video.srcObject = stream;
         })
