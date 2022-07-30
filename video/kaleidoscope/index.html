@@ -48,19 +48,19 @@
 
         var canvas_fan = document.createElement("canvas");
         var ctx_fan = canvas_fan.getContext("2d");
-        var back_canvas = document.createElement("canvas");
-        var back_ctx = back_canvas.getContext("2d");
+        //var back_canvas = document.createElement("canvas");
+        //var back_ctx = back_canvas.getContext("2d");
 
         video.onloadedmetadata = (ev)=>{
             //canvas.width = 640;
             //canvas.height = 640;
-            back_canvas.width = 640;
-            back_canvas.height = 640;
+            //back_canvas.width = 640;
+            //back_canvas.height = 640;
 
             ctx.fillStyle = "black";
             ctx.fillRect(0,0,640,640);
-            back_ctx.fillStyle = "black";
-            back_ctx.fillRect(0,0,640,640);
+            //back_ctx.fillStyle = "black";
+            //back_ctx.fillRect(0,0,640,640);
 
             //let timer = setInterval((e)=>{
             //    createKaleidosopeImage(video);
@@ -79,25 +79,32 @@
 
         const drawRotatedImage = (image, x, y, angle) => {
             // コンテキストを保存する
-            back_ctx.save();
+            //back_ctx.save();
+            ctx.save();
             // 回転の中心に原点を移動する
-            back_ctx.translate(x, y);
+            //back_ctx.translate(x, y);
+            ctx.translate(x, y);
             // canvasを回転する
-            back_ctx.rotate(angle * TO_RADIANS);
+            //back_ctx.rotate(angle * TO_RADIANS);
+            ctx.rotate(angle * TO_RADIANS);
             // 画像サイズの半分だけずらして画像を描画する
             //ctx.drawImage(image, -(image.width/2), -(image.height/2));
-            back_ctx.drawImage(image, 0, -image.height);
-            back_ctx.scale(1,-1);
-            back_ctx.drawImage(image, 0, -image.height);
+            //back_ctx.drawImage(image, 0, -image.height);
+            //back_ctx.scale(1,-1);
+            //back_ctx.drawImage(image, 0, -image.height);
+            ctx.drawImage(image, 0, -image.height);
+            ctx.scale(1,-1);
+            ctx.drawImage(image, 0, -image.height);
             // コンテキストを元に戻す
-            back_ctx.restore();
+            //back_ctx.restore();
+            ctx.restore();
             //var img_data = back_ctx.getImageData(
         }
         function createKaleidosopeImage(img){
             canvas_fan.width=320;
             canvas_fan.height=123;
-            back_canvas.width = 640;
-            back_canvas.height = 640;
+            //back_canvas.width = 640;
+            //back_canvas.height = 640;
             ctx_fan.globalCompositeOperation = 'source-over';
             ctx_fan.drawImage(img, -320, -240+123);
             drawMask();
@@ -107,8 +114,8 @@
             for (let i=0;i<8;i++){
                 drawRotatedImage(fan, 320, 320, 45*i);
             }
-            var img_data = back_ctx.getImageData(0,0,640,640);
-            ctx.putImageData(img_data, 0, 0);
+            //var img_data = back_ctx.getImageData(0,0,640,640);
+            //ctx.putImageData(img_data, 0, 0);
         }
 
         function drawMask(){
