@@ -109,8 +109,8 @@
             //back_canvas.width = 640;
             //back_canvas.height = 640;
             ctx_fan.globalCompositeOperation = 'source-over';
-            //ctx_fan.drawImage(img, -320, -240+123);
-            ctx_fan.drawImage(img, -(video.width/2), -(video.height/2)+123);
+            ctx_fan.drawImage(img, -320, -240+123);
+            //ctx_fan.drawImage(img, -(video.width/2), -(video.height/2)+123);
             drawMask();
             let png = canvas_fan.toDataURL();
             let fan = new Image();
