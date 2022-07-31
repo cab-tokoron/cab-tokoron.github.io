@@ -16,18 +16,16 @@
     <title>Document</title>
 </head>
 <body>
-    <h2 style="font-family: sans-serif;">Kaleidoscope</h2>
+    <h1 style="font-family: sans-serif;">Kaleidoscope</h1>
     <div style="display: flex; justify-content: center;">
-        <canvas id="canvas" width="640" height="640" style="width: 90vw"></canvas>
+        <canvas id="canvas" width="640" height="640" style="width: 100vw"></canvas>
     </div>
     <video id="video" widh="640" hidden></video>
-    <div id="info"></div>
     <script>
 
         let canvas = document.getElementById("canvas");
         let ctx = canvas.getContext("2d");
-        let info = document.getElementById("info");
-
+    
         let constraints = {
             audio: false,
             video: {facingMode: "environment"},
@@ -136,7 +134,6 @@
         }
 
         const canvasUpdate = ()=>{
-            info.innerHTML = "Video size (w x h): " + String(video.width) + " x " + String(video.height);
             createKaleidosopeImage(video);
             window.requestAnimationFrame(canvasUpdate);
         };
