@@ -122,9 +122,9 @@
         }
 
         function createKaleidosopeImage(img, point_number){
-            ctx.save()
-            ctx.translate(-320, -320);
-            ctx.rotate(rotate_angle * TO_RADIANS);
+            //ctx.save()
+            //ctx.translate(-320, -320);
+            //ctx.rotate(rotate_angle * TO_RADIANS);
             let mirror_angle = 360 / (point_number*2);
             canvas_fan.width = 320;
             let px = Math.ceil(320 * Math.cos(TO_RADIANS * mirror_angle));
@@ -142,7 +142,7 @@
             for (let i=0;i<point_number;i++){
                 drawRotatedImage(fan, 320, 320, 360/point_number*i);
             }
-            ctx.restore();
+            //ctx.restore();
             //var img_data = back_ctx.getImageData(0,0,640,640);
             //ctx.putImageData(img_data, 0, 0);
         }
@@ -158,7 +158,11 @@
         }
 
         const canvasUpdate =()=>{
+            ctx.save();
+            ctx.translate(-320, -320);
+            ctx.rotate(rotate_angle * TO_RADIANS);
             createKaleidosopeImage(video, points);
+            ctx.restore();
             window.requestAnimationFrame(canvasUpdate);
             rotate_angle += step_angle;
             if(rotate_angle>=360.0){
