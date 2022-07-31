@@ -123,7 +123,7 @@
 
         function createKaleidosopeImage(img, point_number){
             ctx.save()
-            ctx.translate(320,320);
+            ctx.translate(-320, -320);
             ctx.rotate(rotate_angle * TO_RADIANS);
             let mirror_angle = 360 / (point_number*2);
             canvas_fan.width = 320;
