@@ -21,7 +21,7 @@
         <canvas id="canvas" width="640" height="640" style="width: 100vw"></canvas>
     </div>
     <video id="video" widh="640" hidden></video>
-    <div style="display: flex; justify-content: center;">
+    <div style="display: flex; justify-content: center; margin: 10px;">
         <span>Number of point: </span>
         <span><input type="range" id="range" min="4" max="16" step="1" value="8"></span>
         <span id="point_number">8</span>
@@ -31,6 +31,9 @@
         let canvas = document.getElementById("canvas");
         let ctx = canvas.getContext("2d");
         let point_number = document.getElementById("point_number");
+
+        var rotate_angle = 0.0;
+        let step_angle = 2.5;
 
         var points = 8;
         let range = document.getElementById("range");
@@ -117,8 +120,11 @@
             ctx.restore();
             //var img_data = back_ctx.getImageData(
         }
-        
+
         function createKaleidosopeImage(img, point_number){
+            ctx.save()
+            ctx.translate(320,320);
+            ctx.rotate(rotate_angle * TO_RADIANS);
             let mirror_angle = 360 / (point_number*2);
             canvas_fan.width = 320;
             let px = Math.ceil(320 * Math.cos(TO_RADIANS * mirror_angle));
@@ -136,6 +142,7 @@
             for (let i=0;i<point_number;i++){
                 drawRotatedImage(fan, 320, 320, 360/point_number*i);
             }
+            ctx.restore();
             //var img_data = back_ctx.getImageData(0,0,640,640);
             //ctx.putImageData(img_data, 0, 0);
         }
@@ -153,6 +160,10 @@
         const canvasUpdate =()=>{
             createKaleidosopeImage(video, points);
             window.requestAnimationFrame(canvasUpdate);
+            rotate_angle += step_angle;
+            if(rotate_angle>=360.0){
+                rotate_angle = 0.0;
+            }
         };
 
         canvasUpdate();
