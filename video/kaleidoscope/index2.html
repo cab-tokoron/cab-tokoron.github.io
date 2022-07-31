@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- manifest.jsonを呼び出しています -->
+    <!--link rel="manifest" href="./manifest.json">
+    <script>
+        // service workerが有効なら、service-worker.js を登録します
+        if ('serviceWorker' in navigator) {
+            //navigator.serviceWorker.register('./service-worker.js').then(function() { console.log('Service Worker Registered'); });
+            navigator.serviceWorker.register('./service-worker.js').then(registration => { registration.onupdatefound = function(){ console.log('There is update!'); registration.update(); } }).catch(err => {console.log('Failed to register');});
+        }
+    </script-->
+    <!--meta http-equiv="X-UA-Compatible" content="IE=edge"-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>  
+    <canvas id="canvas" width="640" height="640"></canvas>
+    <video id="video" widh="640" hidden></video>
+    <div id="info"></div>
+    <script>
+
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let info = document.getElementById("info");
+
+        let constraints = {
+            audio: false,
+            video: true,
+            //video: {
+            //    facingMode: "user", 
+            //    width: {ideal: 640}, 
+            //    height: {ideal: 480}
+            //}
+        }
+
+        //var video = document.createElement("video");
+        //video.width = 640;
+        //video.height = 480;
+        //video.autoplay = true;
+        
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream)=>{
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch((err)=>{
+            window.alert(err.name + ": " + err.message);
+        });
+
+        var canvas_fan = document.createElement("canvas");
+        var ctx_fan = canvas_fan.getContext("2d");
+        //var back_canvas = document.createElement("canvas");
+        //var back_ctx = back_canvas.getContext("2d");
+
+        video.onloadedmetadata = (ev)=>{
+            //canvas.width = 640;
+            //canvas.height = 640;
+            //back_canvas.width = 640;
+            //back_canvas.height = 640;
+            //info.innerHTML = "Video size (w x h): " + String(video.clientWidth) + " x " + String(video.clientHeight);
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,640,640);
+            //back_ctx.fillStyle = "black";
+            //back_ctx.fillRect(0,0,640,640);
+
+            //let timer = setInterval((e)=>{
+            //    createKaleidosopeImage(video);
+            //}, 50);
+        };
+        
+
+        const TO_RADIANS = Math.PI/180;
+        /**
+        * 回転させた画像を表示する
+        * @param {object} image - Imageオブジェクト
+        * @param {number} x - 画像の中心となるX座標
+        * @param {number} y - 画像の中心となるY座標
+        * @param {number} angle - 回転する角度[度]
+        */
+
+        const drawRotatedImage = (image, x, y, angle) => {
+            // コンテキストを保存する
+            //back_ctx.save();
+            ctx.save();
+            // 回転の中心に原点を移動する
+            //back_ctx.translate(x, y);
+            ctx.translate(x, y);
+            // canvasを回転する
+            //back_ctx.rotate(angle * TO_RADIANS);
+            ctx.rotate(angle * TO_RADIANS);
+            // 画像サイズの半分だけずらして画像を描画する
+            //ctx.drawImage(image, -(image.width/2), -(image.height/2));
+            //back_ctx.drawImage(image, 0, -image.height);
+            //back_ctx.scale(1,-1);
+            //back_ctx.drawImage(image, 0, -image.height);
+            ctx.drawImage(image, 0, -image.height);
+            ctx.scale(1,-1);
+            ctx.drawImage(image, 0, -image.height);
+            // コンテキストを元に戻す
+            //back_ctx.restore();
+            ctx.restore();
+            //var img_data = back_ctx.getImageData(
+        }
+        function createKaleidosopeImage(img, point_number){
+            let mirror_angle = 360 / (point_number*2);
+            canvas_fan.width = 320;
+            let px = Math.ceil(320 * Math.cos(TO_RADIANS * mirror_angle));
+            let py = Math.ceil(320 * Math.sin(TO_RADIANS * mirror_angle)); 
+            canvas_fan.height = fan_height; //123;
+            //back_canvas.width = 640;
+            //back_canvas.height = 640;
+            ctx_fan.globalCompositeOperation = 'source-over';
+            //ctx_fan.drawImage(img, -320, -240+123);
+            ctx_fan.drawImage(img, 0, 0);
+            drawMask(px, py);
+            let png = canvas_fan.toDataURL();
+            let fan = new Image();
+            fan.src = png;
+            for (let i=0;i<point_number;i++){
+                drawRotatedImage(fan, 320, 320, 360/point_number*i);
+            }
+            //var img_data = back_ctx.getImageData(0,0,640,640);
+            //ctx.putImageData(img_data, 0, 0);
+        }
+
+        function drawMask(px, py){
+            ctx_fan.globalCompositeOperation = 'destination-in';
+            ctx_fan.beginPath();
+                ctx_fan.moveTo(0,py);
+                ctx_fan.lineTo(px,0);
+                ctx_fan.lineTo(319,py);
+            ctx_fan.closePath();
+            ctx_fan.fill();
+        }
+
+        const canvasUpdate = ()=>{
+            info.innerHTML = "Video size (w x h): " + String(video.width) + " x " + String(video.height);
+            createKaleidosopeImage(video, 8);
+            window.requestAnimationFrame(canvasUpdate);
+        };
+
+        canvasUpdate();
+
+    </script>
+</body>
+</html>
