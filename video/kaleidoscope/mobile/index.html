@@ -158,10 +158,13 @@
         }
 
         const canvasUpdate =()=>{
+            createKaleidosopeImage(video, points);
+            
+            var img = ctx.getImageData(0,0,640,640);
             ctx.save();
             ctx.translate(-320, -320);
             ctx.rotate(rotate_angle * TO_RADIANS);
-            createKaleidosopeImage(video, points);
+            ctx.putImageData(img, 0, 0);
             ctx.restore();
             window.requestAnimationFrame(canvasUpdate);
             rotate_angle += step_angle;
