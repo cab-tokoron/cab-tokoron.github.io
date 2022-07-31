@@ -59,7 +59,7 @@
             //canvas.height = 640;
             //back_canvas.width = 640;
             //back_canvas.height = 640;
-            info.innerHTML = "Video size (w x h): " + String(video.clientWidth) + " x " + String(video.clientHeight);
+            //info.innerHTML = "Video size (w x h): " + String(video.clientWidth) + " x " + String(video.clientHeight);
             ctx.fillStyle = "black";
             ctx.fillRect(0,0,640,640);
             //back_ctx.fillStyle = "black";
@@ -132,6 +132,7 @@
         }
 
         const canvasUpdate = ()=>{
+            info.innerHTML = "Video size (w x h): " + String(video.clientWidth) + " x " + String(video.clientHeight);
             createKaleidosopeImage(video);
             window.requestAnimationFrame(canvasUpdate);
         };
