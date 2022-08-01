@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- manifest.jsonを呼び出しています -->
+    <!--link rel="manifest" href="./manifest.json">
+    <script>
+        // service workerが有効なら、service-worker.js を登録します
+        if ('serviceWorker' in navigator) {
+            //navigator.serviceWorker.register('./service-worker.js').then(function() { console.log('Service Worker Registered'); });
+            navigator.serviceWorker.register('./service-worker.js').then(registration => { registration.onupdatefound = function(){ console.log('There is update!'); registration.update(); } }).catch(err => {console.log('Failed to register');});
+        }
+    </script-->
+    <!--meta http-equiv="X-UA-Compatible" content="IE=edge"-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 style="font-family: sans-serif;">Pulse Oxymetry</h1>
+    <video id="video" width="640" playsinline muted hidden></video>
+    <canvas id="canvas" width="40" height="30"></canvas>
+    <div style="display: flex; justify-content: center; margin: 10px;">
+        <div id="info"></div>
+    </div>
+    <script>
+        let canvas = document.getElementById("canvas");
+        //canvas.width = 40;
+        //canvas.height = 30;
+        let info = document.getElementById("info");
+        let ctx = canvas.getContext("2d");
+
+        let constraints = {
+            audio: false,
+            video: {facingMode: "user"},
+        }
+
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream)=>{
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch((err)=>{
+            window.alert(err.name + ": " + err.message);
+        });
+
+        video.onloadedmetadata = (ev)=>{
+            let timer = setInterval((e)=>{
+                ctx.drawImage(video, 0,0,40,30);
+                const imagedata = ctx.getImageData(0,0,40,30);
+                const data = imagedata.data;
+                var r = 0.0;
+                var g = 0.0;
+                var b = 0.0;
+                for (var i=0; i<data.length; i+=4){
+                    r += data[i];
+                    g += data[i+1];
+                    b += data[i+2];
+                }
+                r /= 1200;
+                g /= 1200;
+                b /= 1200;
+                info.innerHTML="rgb: " + r.toFixed(2) + ", " + g.toFixed(2) + ", " + b.toFixed(2); 
+            }, 100);
+        };
+        
+    </script>
+</body>
+</html>
