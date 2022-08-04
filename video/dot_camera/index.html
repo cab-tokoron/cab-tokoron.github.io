@@ -43,7 +43,7 @@
 
             setInterval((e)=>{
                 bufctx.drawImage(video,0,0,sw*8,sh*8,0,0,sw,sh)
-                const imagedata = ctx.getImageData(0,0,sw,sh);
+                const imagedata = bufctx.getImageData(0,0,sw,sh);
                 const data = imagedata.data;
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, sw*8, sh*8);
