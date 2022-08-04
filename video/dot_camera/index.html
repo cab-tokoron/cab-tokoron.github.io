@@ -50,7 +50,8 @@
                 ctx.fillStyle = "white";
                 for (var y=0; y<sh; y++){
                     for (var x=0; x<sw; x++){
-                        var r = Math.round(data[4*y*sw + 4*x + 1]/64);
+                        var d = data[4*y*sw + 4*x + 1];
+                        var r = Math.round(d/64);
                         ctx.beginPath();
                         ctx.arc(x*8+4, y*8+4, r, 0, 2*Math.PI);
                         ctx.fill();
