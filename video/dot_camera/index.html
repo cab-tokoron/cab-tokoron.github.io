@@ -30,13 +30,6 @@
             window.alert(err.name + ": " + err.message);
         });
 
-        function fillCircle(context, cx, cy, radius, color){
-            context.fillStyle = color;
-            context.beginPath();
-            context.arc(cx, cy, radius, 0, 2*Math.PI);
-            context.fill();
-        }
-
         video.onloadedmetadata = (ev)=>{
             vw = video.videoWidth;
             vh = video.videoHeight;
@@ -58,7 +51,9 @@
                 for (var y=0; y<sh; y++){
                     for (var x=0; x<sw; x++){
                         var r = Math.round(data[4*y*sw + 4*x + 1]/64);
-                        fillCircle(ctx, x*8+4, y*8+4, r, "white");
+                        ctx.beginPath();
+                        ctx.arc(x*8+4, y*8+4, r, 0, 2*Math.PI);
+                        ctx.fill();
                     }
                 }
             }, 100);
