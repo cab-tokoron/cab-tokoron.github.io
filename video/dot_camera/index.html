@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <video id="video" playsinline autoplay hidden></video>
+    <div id="info"></div>
+    <script>
+        let video = document.getElementById("video");
+        navigator.mediaDevices.getUserMedia({audio: false, video: {facingMode: user}})
+        .then((stream)=>{
+            video.srcObject = stream;
+        })
+        .catch((err)=>{
+            window.alert(err.name + ": " + err.message);
+        });
+        video.onloadedmetadata = (ev)=>{
+            document.getElementById("info").innerHTML = "Video: " + String(video.widthVideo) + "(W) x " + String(video.heightVideo) + "(h)";
+        };
+    </script>
+</body>
+</html>
