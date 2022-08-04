@@ -19,7 +19,7 @@
             window.alert(err.name + ": " + err.message);
         });
         video.onloadedmetadata = (ev)=>{
-            document.getElementById("info").innerHTML = "Video: " + String(video.widthVideo) + "(W) x " + String(video.heightVideo) + "(h)";
+            document.getElementById("info").innerHTML = "Video: " + String(video.videoWidth) + "(W) x " + String(video.videoHeight) + "(h)";
         };
     </script>
 </body>
