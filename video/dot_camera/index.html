@@ -8,9 +8,20 @@
 </head>
 <body>
     <video id="video" playsinline autoplay hidden></video>
+    <canvas id="canvas"></canvas>
     <div id="info"></div>
     <script>
         let video = document.getElementById("video");
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        let bufcanvas = document.createElement("canvas");
+        var bufctx = bufcanvas.getContext("2d");
+
+        var vw = 0;
+        var vh = 0;
+        var sw = 0;
+        var sh = 0;
+
         navigator.mediaDevices.getUserMedia({audio: false, video: {facingMode: "user"}})
         .then((stream)=>{
             video.srcObject = stream;
@@ -18,8 +29,43 @@
         .catch((err)=>{
             window.alert(err.name + ": " + err.message);
         });
+
+        function fillCircle(context, cx, cy, radius, color){
+            context.fillStyle = color;
+            context.beginPath();
+            context.arc(cx, cy, radius, 0, 2*Math.PI);
+            context.fill();
+        }
         video.onloadedmetadata = (ev)=>{
-            document.getElementById("info").innerHTML = "Video: " + String(video.videoWidth) + "(W) x " + String(video.videoHeight) + "(h)";
+            vw = video.videoWidth;
+            vh = video.videoHeight;
+            sw = Math.floor(vw/8);
+            sh = Math.floor(vh/8);
+            bufcanvas.width = sw;
+            bufcanvas.height = sh;
+            canvas.width = sw*8;
+            canvas.height = sh*8;
+
+
+            setInterval((e)=>{
+                bufctx.drawImage(video,0,0,sw*8,sh*8,0,0,sw,sh)
+                const imagedata = ctx.getImageData(0,0,sw,sh);
+                const data = imagedata.data;
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, sw*8, sh*8);
+                ctx.fillStyle = "white";
+                for (var y=0; y<sh; y++){
+                    for (var x=0; x<sw; x++){
+                        var r = Math.round(data[4*y*sw + 4*x + 1]/64);
+                        fillCircle(ctx, x*8+4, y*8+4, r, "white");
+                    }
+                }
+                r /= 1200;
+                g /= 1200;
+                b /= 1200;
+                info.innerHTML="rgb: " + r.toFixed(2) + ", " + g.toFixed(2) + ", " + b.toFixed(2); 
+            }, 100);
+            //document.getElementById("info").innerHTML = "Video: " + String(video.videoWidth) + "(W) x " + String(video.videoHeight) + "(h)";
         };
     </script>
 </body>
