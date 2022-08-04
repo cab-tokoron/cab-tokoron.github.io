@@ -36,6 +36,7 @@
             context.arc(cx, cy, radius, 0, 2*Math.PI);
             context.fill();
         }
+
         video.onloadedmetadata = (ev)=>{
             vw = video.videoWidth;
             vh = video.videoHeight;
@@ -60,10 +61,6 @@
                         fillCircle(ctx, x*8+4, y*8+4, r, "white");
                     }
                 }
-                r /= 1200;
-                g /= 1200;
-                b /= 1200;
-                info.innerHTML="rgb: " + r.toFixed(2) + ", " + g.toFixed(2) + ", " + b.toFixed(2); 
             }, 100);
             //document.getElementById("info").innerHTML = "Video: " + String(video.videoWidth) + "(W) x " + String(video.videoHeight) + "(h)";
         };
