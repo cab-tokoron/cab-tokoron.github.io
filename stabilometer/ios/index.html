@@ -70,8 +70,6 @@
         let intervalId = 0;
         var graph_area = document.getElementById("stabilometer");
         var graph_ctx = graph_area.getContext("2d");
-        graph_ctx.lineJoin = "round";
-        graph_ctx.lineCap = "round";
         var gravity = document.getElementById("gravityData");
         var stopwatch = document.getElementById("stopwatch");
         let save = document.getElementById("save");  
@@ -192,6 +190,8 @@
             graph_area.width = 480;
             graph_area.height = 480;
             graph_ctx.lineWidth = 2;
+            graph_ctx.lineJoin = "round";
+            graph_ctx.lineCap = "round";
             graph_ctx.fillStyle = "white";
             graph_ctx.fillRect(0,0,480,480);
             graph_ctx.fill();
@@ -201,7 +201,7 @@
                 graph_ctx.moveTo(20+i*55, 20);
                 graph_ctx.lineTo(20+i*55,460);
                 graph_ctx.moveTo( 20,20+i*55);
-                graph_ctx.lineTo(620,20+i*55);
+                graph_ctx.lineTo(460,20+i*55);
             }
             graph_ctx.stroke();
             graph_ctx.fillRect(30,30,430,430);
