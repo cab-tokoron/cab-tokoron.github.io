@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <script>
+        window.addEventListener("load", function() {
+            // service workerが有効なら、service-worker.js を登録します
+            if ('serviceWorker' in navigator) {
+                //navigator.serviceWorker.register('./service-worker.js').then(function() { console.log('Service Worker Registered'); });
+                navigator.serviceWorker.register('./service-worker.js').then(registration => { registration.onupdatefound = function(){ console.log('There is update!'); registration.update(); } }).catch(err => {console.log('Failed to register');});
+            }
+        });
+    </script>
+
+    <title>STABILOMETER</title>
+    <style>
+        .btn-sticky {
+            font-family: sans-serif;
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #f7f7f7;
+            border-left: solid 6px #ff7c5c;/*左線*/
+            color: #ff7c5c;/*文字色*/
+            font-weight: bold;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+        }
+        .btn-sticky:active {
+            box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+    <h2 style="font-family: sans-serif; margin: 5px;">STABILOMETER</h2>
+    <div>
+        <div>
+            <canvas id="stabilometer" style="width: 90vw; display: flex; justify-content: center; margin: 10px;"></canvas>
+        </div>
+
+        <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
+            <span><a href="#" class="btn-sticky" id="start">START</a></span>
+            <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
+            <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
+        </div>
+        <div>
+            <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
+        </div>
+        <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
+            <span><input type="range" id="range" min="10" max="100" step="10" value="40"></span>
+            <span id="scale_info">40</span>
+        </div>
+    </div>
+    <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
+    <!--div id="stabilometer"></div-->
+    <button id="InstallBtn" class="installbotton" style="display:none;">アプリをインストールする</button>
+ 
+    <script src="pwa.js"></script>
+
+    <script>
+        var xg = 0.0;
+        var yg = 0.0;
+        var zg = 0.0;
+        var pre_x = 0.0;
+        var pre_y = 0.0;
+        let intervalId = 0;
+        var graph_area = document.getElementById("stabilometer");
+        var graph_ctx = graph_area.getContext("2d");
+        graph_ctx.lineJoin = "round";
+        graph_ctx.lineCap = "round";
+        var gravity = document.getElementById("gravityData");
+        var stopwatch = document.getElementById("stopwatch");
+        let save = document.getElementById("save");
+        let range = document.getElementById("range");
+        var scale_info = document.getElementById("scale_info");
+        var scaling_factor = 40;
+                                                           
+        var fname = "";
+        var counter = 0;
+        var countup = -5;
+        var res_text = "";
+        
+        window.onload = ()=>{
+            initGraph();
+        };
+
+        window.ondevicemotion = (evt)=>{
+            xg = evt.accelerationIncludingGravity.x;
+            yg = evt.accelerationIncludingGravity.y;
+            zg = evt.accelerationIncludingGravity.z;    
+        };
+
+        document.getElementById("start").onclick = ()=>{
+            var date = new Date();
+            fname = "Stabilometer_" + date.getFullYear()
+                + ('0' + (date.getMonth() + 1)).slice(-2)
+                + ('0' + date.getDate()).slice(-2)
+                + ('0' + date.getHours()).slice(-2)
+                + ('0' + date.getMinutes()).slice(-2)
+                + ('0' + date.getSeconds()).slice(-2) + ".csv";
+            
+            res_text = 'X,Y,ScalingFactor,' + String(scaling_factor) + '\n';
+            counter = 0;
+            countup = -5;
+            save.href = "#"
+                                   
+            intervalId = setInterval(() =>{
+                let crt_x = -xg * scaling_factor + 320;
+                let crt_y = -zg * scaling_factor + 320;
+                gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
+
+                if (counter%40==0){
+                    stopwatch.innerHTML = "Countup: " + String(countup);
+                    countup += 1;
+                }
+                
+                if (counter>200){
+                    graph_ctx.beginPath();
+                    graph_ctx.moveTo(pre_x, pre_y);
+                    graph_ctx.lineTo(crt_x, crt_y);
+                    graph_ctx.closePath();
+                    graph_ctx.stroke();
+                    res_text += (crt_x.toFixed(4) + "," + crt_y.toFixed(4) + "\n"); 
+                }
+                pre_x = crt_x;
+                pre_y = crt_y;
+                counter ++;
+                if (counter>2600){
+                    clearInterval(intervalId);
+                    stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
+                    let blob = new Blob([res_text], {type: 'text/plain'});
+                    save.href = URL.createObjectURL(blob);
+                    save.target = '_blank';
+                    save.download = fname;
+                } 
+            }, 25);
+        };
+
+        document.getElementById("stop").onclick = ()=>{
+            clearInterval(intervalId);
+        };
+
+        range.onchange = ()=>{
+            scaling_factor = range.value;
+            scale_info.innerHTML = String(scaling_factor);
+        };
+
+        /*
+        document.getElementById("save").onclick = ()=>{
+            let blob = new Blob([res_text], {type: 'text/plain'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.target = '_blank';
+            a.download = fname;
+            a.click();
+        };
+        */
+
+        function initGraph(){
+            graph_area.width = 640;
+            graph_area.height = 640;
+            graph_ctx.lineWidth = 2;
+            graph_ctx.fillStyle = "white";
+            graph_ctx.fillRect(0,0,640,640);
+            graph_ctx.fill();
+            graph_ctx.strokeStyle = "black";
+            graph_ctx.strokeRect(20,20,600,600);
+            for (let i=1;i<8;i++){
+                graph_ctx.moveTo(20+i*75, 20);
+                graph_ctx.lineTo(20+i*75,620);
+                graph_ctx.moveTo( 20,20+i*75);
+                graph_ctx.lineTo(620,20+i*75);
+            }
+            graph_ctx.stroke();
+            graph_ctx.fillRect(30,30,580,580);
+            graph_ctx.fill();
+            graph_ctx.strokeStyle = "red";
+        }
+
+    </script>
+</body>
+</html>
