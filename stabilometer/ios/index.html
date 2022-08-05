@@ -35,11 +35,13 @@
     </style>
 </head>
 <body>
-    <div style="width: 100vw; display: flex; justify-content: center; font-family: sans-serif; margin: 5px;">
-        <h2>STABILOMETER</h2> <!--style="font-family: sans-serif; margin: 5px;">STABILOMETER</h2-->
+    <div>
         <div>
+            <h2 style="font-family: sans-serif; margin: 5px;">STABILOMETER</h2>
+        </div>
+        <div style="width: 100vw; display: flex; justify-content: center; font-family: sans-serif; margin: 5px;">
             <div>
-                <canvas id="stabilometer"></canvas> <!--style="width: 90vw; display: flex; justify-content: center;"></canvas-->
+                <canvas id="stabilometer" width="480" height="480"></canvas> <!--style="width: 90vw; display: flex; justify-content: center;"></canvas-->
             </div>
 
             <div> <!--style="width: 100vw; display: flex; justify-content: center;"-->
@@ -204,7 +206,7 @@
             graph_ctx.strokeRect(20,20,440,440);
             for (let i=1;i<8;i++){
                 graph_ctx.moveTo(20+i*55, 20);
-                graph_ctx.lineTo(20+i*55,620);
+                graph_ctx.lineTo(20+i*55,460);
                 graph_ctx.moveTo( 20,20+i*55);
                 graph_ctx.lineTo(620,20+i*55);
             }
