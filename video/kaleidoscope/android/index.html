@@ -8,7 +8,9 @@
         // service workerが有効なら、service-worker.js を登録します
         if ('serviceWorker' in navigator) {
             //navigator.serviceWorker.register('./service-worker.js').then(function() { console.log('Service Worker Registered'); });
-            navigator.serviceWorker.register('./service-worker.js').then(registration => { registration.onupdatefound = function(){ console.log('There is update!'); registration.update(); } }).catch(err => {console.log('Failed to register');});
+            navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => { registration.onupdatefound = function(){ console.log('There is update!'); registration.update(); } })
+            .catch(err => {console.log('Failed to register');});
         }
     </script>
     <!--meta http-equiv="X-UA-Compatible" content="IE=edge"-->
@@ -27,6 +29,7 @@
         <span><input type="range" id="range" min="3" max="20" step="1" value="8"></span>
         <span id="point_number">8</span>
     </div>
+    <button id="InstallBtn" class="installbotton" style="display:none;">アプリをインストールする</button>
 
     <script src="pwa.js"></script>
     
