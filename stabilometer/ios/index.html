@@ -21,7 +21,7 @@
             }
         });
     </script>
-    <script src="./applican.js"></script>
+    <!--script src="./applican.js"></script-->
 
     <title>STABILOMETER</title>
     <style>
@@ -50,7 +50,7 @@
     </div>
 
     <div style="width: 100vw; display: flex; justify-content: center;"-->
-        <span><a href="#" class="btn-sticky" id="connect">DEV.</a></span>
+        <span><a href="#" class="btn-sticky" id="device">DEV:off</a></span>
         <span><a href="#" class="btn-sticky" id="start">START</a></span>
         <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
         <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
@@ -85,13 +85,14 @@
         let range = document.getElementById("range");
         var scale_info = document.getElementById("scale_info");
         var scaling_factor = 20;
+        let device = document.getElementById("device");
         
         var fname = "";
         var counter = 0;
         var countup = -5;
         var res_text = "";
         
-        document.getElementById("connect").onclick = ()=>{
+        device.onclick = ()=>{
             deviceMotionRequest();
         };
         
@@ -120,6 +121,7 @@
                     }
                 })
                 .catch(console.error);
+                device.innerHTML = "DEV:on"
             }
             else {
                 alert('DeviceMotionEvent.requestPermission is not found');
@@ -151,7 +153,7 @@
                 }
                 
                 if (counter>200){
-                    applican.notification.vibrate(200);
+                    //applican.notification.vibrate(200);
                     graph_ctx.beginPath();
                     graph_ctx.moveTo(pre_x, pre_y);
                     graph_ctx.lineTo(crt_x, crt_y);
@@ -163,7 +165,7 @@
                 pre_y = crt_y;
                 counter ++;
                 if (counter>2600){
-                    applican.notification.vibrate(500);
+                    //applican.notification.vibrate(500);
                     clearInterval(intervalId);
                     stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
                     let blob = new Blob([res_text], {type: 'text/plain'});
