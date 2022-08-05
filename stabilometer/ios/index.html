@@ -59,8 +59,8 @@
     </div>
     <div style="font-family: sans-serif; width: 100vw; display: flex; justify-content: center;">
         <span>Scaling factor: </span>
-        <span><input type="range" id="range" min="10" max="100" step="10" value="40"></span>
-        <span id="scale_info">40</span>
+        <span><input type="range" id="range" min="5" max="40" step="5" value="20"></span>
+        <span id="scale_info">20</span>
     </div>
 
     <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
@@ -83,7 +83,7 @@
         let save = document.getElementById("save");  
         let range = document.getElementById("range");
         var scale_info = document.getElementById("scale_info");
-        var scaling_factor = 40;
+        var scaling_factor = 20;
         
         var fname = "";
         var counter = 0;
