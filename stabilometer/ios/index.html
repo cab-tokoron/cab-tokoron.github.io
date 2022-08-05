@@ -52,7 +52,7 @@
         </div>
         <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
             <span><input type="range" id="range" min="10" max="100" step="10" value="40"></span>
-            <span>40</span>
+            <span id="scale_info">40</span>
         </div>
 
     </div>
@@ -77,6 +77,7 @@
         var stopwatch = document.getElementById("stopwatch");
         let save = document.getElementById("save");  
         let range = document.getElementById("range");
+        var scale_info = document.getElementById("scale_info");
         var scaling_factor = 40;
         
         var fname = "";
@@ -172,6 +173,7 @@
 
         range.onchange = ()=>{
             scaling_factor = range.value;
+            scale_info.innerHTML = String(scaling_factor);
         };
 
         /*
