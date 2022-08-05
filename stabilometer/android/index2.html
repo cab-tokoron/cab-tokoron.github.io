@@ -43,19 +43,22 @@
 </head>
 <body>
     <h2 style="font-family: sans-serif; margin: 5px; display: flex; justify-content: center;">STABILOMETER</h2>
+    <br>
     <!--div style="width: 90vw; display: flex; justify-content: center; font-family: sans-serif; margin: 5px;"-->
     <div  style="width: 100vw; display: flex; justify-content: center;">
         <canvas id="stabilometer" width="480" height="480"></canvas>
     </div>
-
+    <br>
     <div style="width: 100vw; display: flex; justify-content: center;">
         <span><a href="#" class="btn-sticky" id="start">START</a></span>
         <span><a href="#" class="btn-sticky" id="stop">STOP</a></span>
         <span><a href="#" class="btn-sticky" id="save">SAVE</a></span>
     </div>
+    <br>
     <div>
         <div id="gravityData" style="font-family: sans-serif; display: flex; justify-content: center;">Gravities:</div>
     </div>
+    <br>
     <div style="font-family: sans-serif; width: 100vw; display: flex; justify-content: center;">
         <span>Scaling factor: </span>
         <span><input type="range" id="range" min="5" max="40" step="5" value="20"></span>
@@ -183,7 +186,7 @@
                 graph_ctx.lineTo(460,30+i*55);
             }
             graph_ctx.stroke();
-            graph_ctx.fillRect(20,20,400,400);
+            graph_ctx.fillRect(30,30,420,420);
             graph_ctx.fill();
             graph_ctx.strokeStyle = "red";
         }
