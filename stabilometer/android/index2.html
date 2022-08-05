@@ -128,7 +128,7 @@
                 }
                 
                 if (counter>200){
-                    navigator.vibrate(200);
+                    navigator.vibrate(1);
                     sleep(200);
                     navigator.vibrate(0);
                     graph_ctx.beginPath();
@@ -142,7 +142,7 @@
                 pre_y = crt_y;
                 counter ++;
                 if (counter>2600){
-                    navigator.vibrate(500);
+                    navigator.vibrate(1);
                     sleep(500);
                     navigator.vibrate(0);
                     clearInterval(intervalId);
