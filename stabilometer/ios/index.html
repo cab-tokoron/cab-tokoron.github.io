@@ -50,6 +50,11 @@
         <div>
             <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
         </div>
+        <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
+            <span><input type="range" id="range" min="10" max="100" step="10" value="40"></span>
+            <span>40</span>
+        </div>
+
     </div>
     <h3 style="font-family: sans-serif; margin: 10px; display: flex; justify-content: center" id="stopwatch"></h3>
     <!--a id="downloadlink"></a-->
@@ -70,7 +75,10 @@
         graph_ctx.lineCap = "round";
         var gravity = document.getElementById("gravityData");
         var stopwatch = document.getElementById("stopwatch");
-        let save = document.getElementById("save");                                                   
+        let save = document.getElementById("save");  
+        let range = document.getElementById("range");
+        var scaling_factor = 40;
+        
         var fname = "";
         var counter = 0;
         var countup = -5;
@@ -126,8 +134,8 @@
             save.href = "#";
             
             intervalId = setInterval(() =>{
-                let crt_x = -xg * 40 + 320;
-                let crt_y = -zg * 40 + 320;
+                let crt_x = -xg * scaling_factor + 320;
+                let crt_y = -zg * scaling_factor + 320;
                 gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
 
                 if (counter%40==0){
@@ -160,6 +168,10 @@
 
         document.getElementById("stop").onclick = ()=>{
             clearInterval(intervalId);
+        };
+
+        range.onchange = ()=>{
+            scaling_factor = range.value;
         };
 
         /*
