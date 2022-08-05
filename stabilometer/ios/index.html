@@ -139,8 +139,8 @@
             save.href = "#";
             
             intervalId = setInterval(() =>{
-                let crt_x = -xg * scaling_factor + 320;
-                let crt_y = -zg * scaling_factor + 320;
+                let crt_x = -xg * scaling_factor + 240;
+                let crt_y = -zg * scaling_factor + 240;
                 gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
 
                 if (counter%40==0){
@@ -194,22 +194,22 @@
         */
         
         function initGraph(){
-            graph_area.width = 640;
-            graph_area.height = 640;
+            graph_area.width = 480;
+            graph_area.height = 480;
             graph_ctx.lineWidth = 2;
             graph_ctx.fillStyle = "white";
-            graph_ctx.fillRect(0,0,640,640);
+            graph_ctx.fillRect(0,0,480,480);
             graph_ctx.fill();
             graph_ctx.strokeStyle = "black";
-            graph_ctx.strokeRect(20,20,600,600);
+            graph_ctx.strokeRect(20,20,440,440);
             for (let i=1;i<8;i++){
-                graph_ctx.moveTo(20+i*75, 20);
-                graph_ctx.lineTo(20+i*75,620);
-                graph_ctx.moveTo( 20,20+i*75);
-                graph_ctx.lineTo(620,20+i*75);
+                graph_ctx.moveTo(20+i*55, 20);
+                graph_ctx.lineTo(20+i*55,620);
+                graph_ctx.moveTo( 20,20+i*55);
+                graph_ctx.lineTo(620,20+i*55);
             }
             graph_ctx.stroke();
-            graph_ctx.fillRect(30,30,580,580);
+            graph_ctx.fillRect(30,30,430,430);
             graph_ctx.fill();
             graph_ctx.strokeStyle = "red";
         }
