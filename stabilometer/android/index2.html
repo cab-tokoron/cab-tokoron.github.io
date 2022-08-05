@@ -128,8 +128,11 @@
                     countup += 1;
                 }
                 
+                if (counter == 200){
+                    navigator.vibrate(200);
+                }
+
                 if (counter>200){
-                    navigator.notification.vibrate(200);
                     graph_ctx.beginPath();
                     graph_ctx.moveTo(pre_x, pre_y);
                     graph_ctx.lineTo(crt_x, crt_y);
@@ -137,12 +140,16 @@
                     graph_ctx.stroke();
                     res_text += (crt_x.toFixed(4) + "," + crt_y.toFixed(4) + "\n"); 
                 }
+                
                 pre_x = crt_x;
                 pre_y = crt_y;
                 counter ++;
-                if (counter>2600){
-                    navigator.notification.vibrate(500);
+                
+                if (counter == 2600){
+                    navigator.vibrate(500);
+                }
 
+                if (counter>2600){
                     clearInterval(intervalId);
                     stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
                     let blob = new Blob([res_text], {type: 'text/plain'});
