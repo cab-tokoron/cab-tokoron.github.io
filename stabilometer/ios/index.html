@@ -138,7 +138,7 @@
             counter = 0;
             countup = -5;
             save.href = "#";
-            
+            initGraph();
             intervalId = setInterval(() =>{
                 let crt_x = -xg * scaling_factor + 160;
                 let crt_y = -zg * scaling_factor + 160;
@@ -150,6 +150,7 @@
                 }
                 
                 if (counter>200){
+                    navigator.vibrate(200);
                     graph_ctx.beginPath();
                     graph_ctx.moveTo(pre_x, pre_y);
                     graph_ctx.lineTo(crt_x, crt_y);
@@ -161,6 +162,7 @@
                 pre_y = crt_y;
                 counter ++;
                 if (counter>2600){
+                    navigator.vibrate(500);
                     clearInterval(intervalId);
                     stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
                     let blob = new Blob([res_text], {type: 'text/plain'});
