@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--meta http-equiv="X-UA-Compatible" content="IE=edge"-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Document</title>
+</head>
+<body>
+    <h1 style="font-family: sans-serif;">Kaleidoscope</h1>
+    <div style="display: flex; justify-content: center;">
+        <canvas id="canvas" width="640" height="640" style="width: 100vw"></canvas>
+    </div>
+    <video id="video" widh="640" playsinline muted hidden></video>
+    <div style="display: flex; justify-content: center; margin: 10px;">
+        <div id="info"></div>
+        <span>Number of point: </span>
+        <span><input type="range" id="range" min="3" max="20" step="1" value="8"></span>
+        <span id="point_number">8</span>
+    </div>
+    <script>
+
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let point_number = document.getElementById("point_number");
+
+        var rotate_angle = 0.0;
+        let step_angle = 2.5;
+
+        var points = 8;
+        let range = document.getElementById("range");
+        range.onchange =()=>{
+            points = range.value;
+            point_number.innerHTML= String(points);
+        };
+
+        let constraints = {
+            audio: false,
+            video: {facingMode: "environment"},
+            //video: {
+            //    facingMode: "user", 
+            //    width: {ideal: 640}, 
+            //    height: {ideal: 480}
+            //}
+        }
+
+        //var video = document.createElement("video");
+        //video.width = 640;
+        //video.height = 480;
+        //video.autoplay = true;
+        
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream)=>{
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch((err)=>{
+            window.alert(err.name + ": " + err.message);
+        });
+
+        var canvas_fan = document.createElement("canvas");
+        var ctx_fan = canvas_fan.getContext("2d");
+        //var back_canvas = document.createElement("canvas");
+        //var back_ctx = back_canvas.getContext("2d");
+
+        video.onloadedmetadata = (ev)=>{
+            //canvas.width = 640;
+            //canvas.height = 640;
+            //back_canvas.width = 640;
+            //back_canvas.height = 640;
+            //info.innerHTML = "Video size (w x h): " + String(video.clientWidth) + " x " + String(video.clientHeight);
+            document.getElementById("info").innerHTML = "Video: " + String(video.videoWidth) + "(W) x " + String(video.videoHeight) + "(h)";
+
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,640,640);
+            //back_ctx.fillStyle = "black";
+            //back_ctx.fillRect(0,0,640,640);
+
+            //let timer = setInterval((e)=>{
+            //    createKaleidosopeImage(video);
+            //}, 50);
+        };
+        
+
+        const TO_RADIANS = Math.PI/180;
+        /**
+        * 回転させた画像を表示する
+        * @param {object} image - Imageオブジェクト
+        * @param {number} x - 画像の中心となるX座標
+        * @param {number} y - 画像の中心となるY座標
+        * @param {number} angle - 回転する角度[度]
+        */
+
+        const drawRotatedImage = (image, x, y, angle) => {
+            // コンテキストを保存する
+            //back_ctx.save();
+            ctx.save();
+            // 回転の中心に原点を移動する
+            //back_ctx.translate(x, y);
+            ctx.translate(x, y);
+            // canvasを回転する
+            //back_ctx.rotate(angle * TO_RADIANS);
+            ctx.rotate(angle * TO_RADIANS);
+            // 画像サイズの半分だけずらして画像を描画する
+            //ctx.drawImage(image, -(image.width/2), -(image.height/2));
+            //back_ctx.drawImage(image, 0, -image.height);
+            //back_ctx.scale(1,-1);
+            //back_ctx.drawImage(image, 0, -image.height);
+            ctx.drawImage(image, 0, -image.height);
+            ctx.scale(1,-1);
+            ctx.drawImage(image, 0, -image.height);
+            // コンテキストを元に戻す
+            //back_ctx.restore();
+            ctx.restore();
+            //var img_data = back_ctx.getImageData(
+        }
+
+        function createKaleidosopeImage(img, point_number){
+            //ctx.save()
+            //ctx.translate(-320, -320);
+            //ctx.rotate(rotate_angle * TO_RADIANS);
+            let mirror_angle = 360 / (point_number*2);
+            canvas_fan.width = 320;
+            let px = Math.ceil(320 * Math.cos(TO_RADIANS * mirror_angle));
+            let py = Math.ceil(320 * Math.sin(TO_RADIANS * mirror_angle)); 
+            canvas_fan.height = py; //123;
+            //back_canvas.width = 640;
+            //back_canvas.height = 640;
+            ctx_fan.globalCompositeOperation = 'source-over';
+            //ctx_fan.drawImage(img, -320, -240+123);
+            ctx_fan.drawImage(img, 0, 0);
+            drawMask(px, py);
+            let png = canvas_fan.toDataURL();
+            let fan = new Image();
+            fan.src = png;
+            for (let i=0;i<point_number;i++){
+                drawRotatedImage(fan, 320, 320, 360/point_number*i);
+            }
+            //ctx.restore();
+            //var img_data = back_ctx.getImageData(0,0,640,640);
+            //ctx.putImageData(img_data, 0, 0);
+        }
+
+        function drawMask(px, py){
+            ctx_fan.globalCompositeOperation = 'destination-in';
+            ctx_fan.beginPath();
+                ctx_fan.moveTo(0,py);
+                ctx_fan.lineTo(px,0);
+                ctx_fan.lineTo(319,py);
+            ctx_fan.closePath();
+            ctx_fan.fill();
+        }
+
+        const canvasUpdate =()=>{
+            createKaleidosopeImage(video, points);
+            //let png = canvas.toDataURL();
+            //var img = ctx.getImageData(0,0,640,640);
+            //ctx.save();
+            //ctx.translate(-320, -320);
+            //ctx.rotate(rotate_angle * TO_RADIANS);
+            //ctx.drawImage(png, 0, 0);
+            //ctx.putImageData(img, 0, 0);
+            //ctx.restore();
+            window.requestAnimationFrame(canvasUpdate);
+            rotate_angle += step_angle;
+            if(rotate_angle>=360.0){
+                rotate_angle = 0.0;
+            }
+        };
+
+        canvasUpdate();
+
+    </script>
+</body>
+</html>
