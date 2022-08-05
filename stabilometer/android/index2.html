@@ -21,7 +21,6 @@
             }
         });
     </script>
-    <!--script src="./applican.js"></script-->
 
     <title>STABILOMETER</title>
     <style>
@@ -46,7 +45,7 @@
     <h2 style="font-family: sans-serif; margin: 5px; display: flex; justify-content: center;">STABILOMETER</h2>
     <!--div style="width: 90vw; display: flex; justify-content: center; font-family: sans-serif; margin: 5px;"-->
     <div  style="width: 100vw; display: flex; justify-content: center;">
-        <canvas id="stabilometer" width="320" height="320"></canvas>
+        <canvas id="stabilometer" width="480" height="480"></canvas>
     </div>
 
     <div style="width: 100vw; display: flex; justify-content: center;"-->
@@ -110,8 +109,8 @@
             save.href = "#";
             initGraph();
             intervalId = setInterval(() =>{
-                let crt_x = -xg * scaling_factor + 160;
-                let crt_y = -zg * scaling_factor + 160;
+                let crt_x = -xg * scaling_factor + 240;
+                let crt_y = -zg * scaling_factor + 240;
                 gravityData.innerHTML = "Gravities= (xg: " + xg.toFixed(3) + ", zg: " + zg.toFixed(3) + ")" ;
 
                 if (counter%40==0){
@@ -167,24 +166,24 @@
         */
         
         function initGraph(){
-            graph_area.width = 320;
-            graph_area.height = 320;
+            graph_area.width = 480;
+            graph_area.height = 480;
             graph_ctx.lineWidth = 2;
             graph_ctx.lineJoin = "round";
             graph_ctx.lineCap = "round";
             graph_ctx.fillStyle = "white";
-            graph_ctx.fillRect(0,0,320,320);
+            graph_ctx.fillRect(0,0,480,480);
             graph_ctx.fill();
             graph_ctx.strokeStyle = "black";
-            graph_ctx.strokeRect(10,10,300,300);
-            for (let i=1;i<6;i++){
-                graph_ctx.moveTo(10+i*50, 10);
-                graph_ctx.lineTo(10+i*50,310);
-                graph_ctx.moveTo( 10,10+i*50);
-                graph_ctx.lineTo(310,10+i*50);
+            graph_ctx.strokeRect(20,20,440,440);
+            for (let i=1;i<8;i++){
+                graph_ctx.moveTo(20+i*55, 20);
+                graph_ctx.lineTo(20+i*55,460);
+                graph_ctx.moveTo( 20,20+i*55);
+                graph_ctx.lineTo(460,20+i*55);
             }
             graph_ctx.stroke();
-            graph_ctx.fillRect(20,20,280,280);
+            graph_ctx.fillRect(20,20,400,400);
             graph_ctx.fill();
             graph_ctx.strokeStyle = "red";
         }
