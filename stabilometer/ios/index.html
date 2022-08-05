@@ -44,7 +44,7 @@
 <body>
     <h2 style="font-family: sans-serif; margin: 5px;">STABILOMETER</h2>
     <!--div style="width: 90vw; display: flex; justify-content: center; font-family: sans-serif; margin: 5px;"-->
-    <div  style="width: 90vw; display: flex; justify-content: center;">
+    <div  style="width: 100vw; display: flex; justify-content: center;">
         <canvas id="stabilometer" width="320" height="320"></canvas>
     </div>
 
@@ -206,12 +206,12 @@
             graph_ctx.strokeRect(10,10,300,300);
             for (let i=1;i<6;i++){
                 graph_ctx.moveTo(10+i*50, 10);
-                graph_ctx.lineTo(10+i*50,310);
+                graph_ctx.lineTo(10+i*50,300);
                 graph_ctx.moveTo( 10,10+i*50);
-                graph_ctx.lineTo(310,10+i*50);
+                graph_ctx.lineTo(300,10+i*50);
             }
             graph_ctx.stroke();
-            graph_ctx.fillRect(20,20,300,300);
+            graph_ctx.fillRect(20,20,280,280);
             graph_ctx.fill();
             graph_ctx.strokeStyle = "red";
         }
