@@ -42,7 +42,7 @@
     </style>
 </head>
 <body>
-    <h2 style="font-family: sans-serif; margin: 5px;">STABILOMETER</h2>
+    <h2 style="font-family: sans-serif; margin: 5px; display: flex; justify-content: center;">STABILOMETER</h2>
     <!--div style="width: 90vw; display: flex; justify-content: center; font-family: sans-serif; margin: 5px;"-->
     <div  style="width: 100vw; display: flex; justify-content: center;">
         <canvas id="stabilometer" width="320" height="320"></canvas>
@@ -58,6 +58,7 @@
         <div id="gravityData" style="font-family: sans-serif; margin: 10px 10px 10px 30px;">Gravities:</div>
     </div>
     <div style="width: 100vw; display: flex; justify-content: center; margin: 10px">
+        <span>Scaling factor: </span>
         <span><input type="range" id="range" min="10" max="100" step="10" value="40"></span>
         <span id="scale_info">40</span>
     </div>
