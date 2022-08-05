@@ -129,6 +129,8 @@
                 
                 if (counter>200){
                     navigator.vibrate(200);
+                    sleep(200);
+                    navigator.vibrate(0);
                     graph_ctx.beginPath();
                     graph_ctx.moveTo(pre_x, pre_y);
                     graph_ctx.lineTo(crt_x, crt_y);
@@ -141,6 +143,8 @@
                 counter ++;
                 if (counter>2600){
                     navigator.vibrate(500);
+                    sleep(500);
+                    navigator.vibrate(0);
                     clearInterval(intervalId);
                     stopwatch.innerHTML = "Finished! (countup: " + String(countup-1) + ")";
                     let blob = new Blob([res_text], {type: 'text/plain'});
