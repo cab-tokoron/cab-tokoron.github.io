@@ -97,6 +97,12 @@
             initGraph();
         };
         
+        window.ondevicemotion = (evt)=>{
+            xg = evt.accelerationIncludingGravity.x;
+            yg = evt.accelerationIncludingGravity.y;
+            zg = evt.accelerationIncludingGravity.z;    
+        };
+
         document.getElementById("start").onclick = ()=>{
             var date = new Date();
             fname = "Stabilometer_" + date.getFullYear()
