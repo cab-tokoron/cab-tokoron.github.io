@@ -26,7 +26,7 @@
     <script>
         let selectedfile = document.getElementById("selectedfile");
         let input_image  = document.getElementById("inputimg");
-        function cvread(){
+        function cvready(){
             document.getElementById("status").innerHTML="Now OpenCV ready.";
             selectedfile.addEventListener("change", async ()=>{
                 input_image.src = URL.createObjectURL(selectedfile.files[0]);
