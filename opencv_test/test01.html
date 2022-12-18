@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="status">OpenCV not ready...</div>
+    <input type="file" id="selectedfile" name="file"/>
+    <img id="inputimg" src=""/>
+    <div>
+        <div>Original image</div>
+        <canvas id="canvas1"></canvas>
+    </div>
+    <div>
+        <div>Gray image</div>
+        <canvas id="canvas2"></canvas>
+    </div>
+    <div>
+        <div>Canny edge image</div>
+        <canvas id="canvas3"></canvas>
+    </div>
+    <script async src="https://docs.opencv.org/4.6.0/opencv.js" onload="cvready()"></script>
+    <script>
+        let selectedfile = document.getElementById("selectedfile");
+        let input_image  = document.getElementById("inputimg");
+        function cvread(){
+            document.getElementById("status").innerHTML="Now OpenCV ready.";
+            selectedfile.addEventListener("change", async ()=>{
+                input_image.src = URL.createObjectURL(selectedfile.files[0]);
+            },false);
+        }
+        input_image.addEventListener("load", ()=>{
+            let src = cv.imread("inputimg");
+            let out1 = new cv.Mat();
+            let out2 = new cv.Mat();
+            cv.cvtColor(src, out1, cv.COLOR_BGR2GRAY, 0);
+            cv.threshold(out1, out2, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+            cv.imshow("canvas1", out1);
+            cv.imshow("canvas2", out2);
+            cv.Canny(out1, out1, 150, 200);
+            cv.imshow("canvas3", out1);
+            src.delete();
+            out1.delete();
+            out2.delete();
+        })
+    </script>
+</body>
+</html>
