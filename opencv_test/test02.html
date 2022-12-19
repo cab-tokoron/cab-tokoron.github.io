@@ -26,6 +26,7 @@
                 }
             }
             iscvloaded = true;
+            document.getElementById("status").innerHTML="Now OpenCV ready.";
         }
 
         let constraints = {
@@ -66,7 +67,7 @@
                 src.delete();
                 dst.delete();
 
-                let delay  = 1000/30; -(Date.now() - starttime);
+                let delay  = 1000/30 -(Date.now() - starttime);
                 setTimeout(processVideo, delay);
             }
             catch(err){
