@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script async src="https://docs.opencv.org/4.6.0/opencv.js" onload="cvready()"></script>
+    <div id="status">OpenCV not ready...</div>
+    <canvas id="canvas1"></canvas>
+    <video id="video" playsinline muted autoplay></video>
+    <script>
+        const video = document.getElementById("video");
+        let iscvloaded = false;
+        let cap = null;
+
+        function cvready(){
+            if(cv.getBuildInformation){
+                console.log(cv.getBuildInformation());
+            }
+            else{
+                cv['onRuntimeInitialized']=()=>{
+                    console.log(cv.getBuildInformation());
+                }
+            }
+            iscvloaded = true;
+        }
+
+        let constraints = {
+            audio: false,
+            video: {facingMode: "user"},
+            //video: {
+            //    facingMode: "user" or "environment"
+            //    width: {ideal: 640}, 
+            //    height: {ideal: 480}
+            //}
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream)=>{
+            video.srcObject = stream;
+            video.addEventListener("canplay", ()=>{
+                video.width = video.videoWidth;
+                video.height= video.videoHeight;
+                setTimeout(processVideo, 100);
+            }), false
+        });
+
+        function processVideo(){
+            try{
+                if(!iscvloaded){
+                    setTimeout(processVideo, 100);
+                    return;
+                }
+                else if(cap==null){
+                    cap = new cv.VideoCapture(video);
+                }
+                let starttime = Date.now();
+                let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+                let dst = new cv.Mat();
+                cap.read(src);
+                cv.cvtColor(src, dst, cv.COLOR_BGR2GRAY);
+                cv.imshow("canvas1", dst);
+                src.delete();
+                dst.delete();
+
+                let delay  = 1000/30; -(Date.now() - starttime);
+                setTimeout(processVideo, delay);
+            }
+            catch(err){
+                console.error(err.message);
+            }
+            return;
+        }
+
+    </script>
+</body>
+</html>
