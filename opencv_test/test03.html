@@ -21,6 +21,7 @@
             let ctx = canvas.getContext("2d");
             ctx.fillStyle="#FFFFFF";
             ctx.fillRect(0,0,640,480);
+            cv.setMouseCallback("canvas", mouse_event);
         }
 
         let px=0;
@@ -55,7 +56,7 @@
             }
         }
 
-        cv.setMouseCallback("canvas", mouse_event);
+        
         
     </script>
 </body>
