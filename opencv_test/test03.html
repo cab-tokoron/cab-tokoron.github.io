@@ -13,7 +13,8 @@
     <script>
         function cvready(){
             document.getElementById("status").innerHTML="Now OpenCV ready.";
-            let src = cv.Mat.zeros(480, 640, cv.CV_8UC3);
+            let color = new cv.Scalar(255,255,255);
+            let src = cv.Mat(480, 640, cv.CV_8UC3, color);
             cv.imwrite("canvas", src);
             src.delete();
         }
@@ -28,7 +29,7 @@
             src.delete();
         };
         */
-       
+
         function mouse_event(event, x, y, flags, params){
             if (event==cv.EVENT_LBUTTONDOWN){
                 px, py = x, y;
