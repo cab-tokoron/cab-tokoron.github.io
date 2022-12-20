@@ -14,7 +14,7 @@
         function cvready(){
             document.getElementById("status").innerHTML="Now OpenCV ready.";
             let color = new cv.Scalar(255,255,255);
-            let src = cv.Mat(480, 640, cv.CV_8UC3, color);
+            let src = new cv.Mat(480, 640, cv.CV_8UC3, color);
             cv.imwrite("canvas", src);
             src.delete();
         }
