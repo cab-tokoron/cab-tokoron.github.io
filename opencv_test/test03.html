@@ -13,10 +13,14 @@
     <script>
         function cvready(){
             document.getElementById("status").innerHTML="Now OpenCV ready.";
-            let color = new cv.Scalar(255,255,255);
-            let src = new cv.Mat(480, 640, cv.CV_8UC3, color);
-            cv.imwrite("canvas", src);
-            src.delete();
+            //let color = new cv.Scalar(255,255,255);
+            //let src = new cv.Mat(480, 640, cv.CV_8UC3, color);
+            //cv.imwrite("canvas", src);
+            //src.delete();
+            let canvas = document.getElementById("canvas");
+            let ctx = canvas.getContext("2d");
+            ctx.fillStyle="#FFFFFF";
+            ctx.fillRect(0,0,640,480);
         }
 
         let px=0;
