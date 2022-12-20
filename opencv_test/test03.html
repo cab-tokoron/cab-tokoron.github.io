@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <script>
+        let px=0;
+        let py=0;
+        let ondraw=false;
+
+        window.onload=()=>{
+            let src = cv.Mat.zeros(480, 640, cv.CV_8UC3);
+            cv.imwrite("canvas", src);
+            src.delete();
+        };
+
+        function mouse_event(event, x, y, flags, params){
+            if (event==cv.EVENT_LBUTTONDOWN){
+                px, py = x, y;
+                ondraw=true;
+            }
+            else if (event==cv.EVENT_MOUSEMOVE){
+                if(ondraw){
+                    let src = cv.imread("canvas");
+                    let p1 = new cv.Point(px,py);
+                    let p2 = new cv.Point(x,y);
+                    cv.line(src, p1, p2, [0,0,255,255], 1);
+                    px, py = x, y;
+                    cv.imwrite("canvas", src);
+                    src.delete()
+                }
+            }
+            else if (event==cv.EVENT_LBUTTONUP){
+                ondraw=false;
+            }
+        }
+
+        cv.setMouseCallback("canvas", mouse_event);
+        
+    </script>
+</body>
+</html>
