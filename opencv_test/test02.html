@@ -63,7 +63,7 @@
                 let dst = new cv.Mat();
                 cap.read(src);
                 cv.cvtColor(src, dst, cv.COLOR_BGR2GRAY);
-                cv.imshow("canvas1", dst);
+                cv.imshow("canvas1", src);
                 src.delete();
                 dst.delete();
 
