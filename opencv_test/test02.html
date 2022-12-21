@@ -56,7 +56,7 @@
                     return;
                 }
                 else if(cap==null){
-                    cap = new cv.VideoCapture(video);
+                    cap = new cv.VideoCapture("video");
                 }
                 let starttime = Date.now();
                 let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
