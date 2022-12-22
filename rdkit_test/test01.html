@@ -19,11 +19,11 @@
         initRDKitModule().then((instance)=>{
             RDKitModule = instance;
             console.log("version: "+ RDKitModule.version());
+            var smiles = "CC(=O)Oc1ccccc1C(=O)O";
+            var mol = RDKitModule.get_mol(smiles);
+            var canvas = document.getElementById("canvas");
+            mol.draw_to_canvas(canvas, -1,-1);
         });
-        var smiles = "CC(=O)Oc1ccccc1C(=O)O";
-        var mol = RDKitModule.get_mol(smiles);
-        var canvas = document.getElementById("canvas");
-        mol.draw_to_canvas(canvas, -1,-1);
     </script>
 </body>
 </html>
