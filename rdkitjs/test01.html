@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="250" height="250"></canvas>
+    <button id="button">run</button>
+    <script>
+        let content = `var smiles = "CC(=O)Oc1ccccc1C(=O)O";
+  var mol = RDKitModule.get_mol(smiles);
+  var canvas = document.getElementById("canvas");
+  mol.draw_to_canvas(canvas, -1, -1);`
+        document.getElementById("button").addEventListener("click",()=>{
+            eval(content);
+        }, false);
+    </script>
+</body>
+</html>

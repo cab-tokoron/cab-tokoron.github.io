@@ -10,7 +10,7 @@
     <script async src="https://docs.opencv.org/4.6.0/opencv.js" onload="cvready()"></script>
     <div id="status">OpenCV not ready...</div>
     <canvas id="canvas1"></canvas>
-    <video id="video" playsinline muted autoplay></video>
+    <video id="video" playsinline muted autoplay hidden></video>
     <script>
         const video = document.getElementById("video");
         let iscvloaded = false;
@@ -61,8 +61,12 @@
                 let starttime = Date.now();
                 let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
                 let dst = new cv.Mat();
+                let tmp = new cv.Mat();
                 cap.read(src);
                 cv.cvtColor(src, dst, cv.COLOR_BGR2GRAY);
+                cv.Canny(dst, tmp, 150, 200);
+                cv.Max(dst, tmp, tmp);
+                cv.
                 cv.imshow("canvas1", dst);
                 src.delete();
                 dst.delete();
