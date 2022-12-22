@@ -6,16 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
-    <script>
+    <!--script>
         initRDKitModule().then((instance)=>{
             RDKitModule = instance;
             console.log("version: "+ RDKitModule.version());
         });
-    </script>
+    </script-->
 </head>
 <body>
     <canvas id="canvas" width="250" height="250"></canvas>
-    <script>
+    <script>        
+        initRDKitModule().then((instance)=>{
+            RDKitModule = instance;
+            console.log("version: "+ RDKitModule.version());
+        });
         var smiles = "CC(=O)Oc1ccccc1C(=O)O";
         var mol = RDKitModule.get_mol(smiles);
         var canvas = document.getElementById("canvas");
