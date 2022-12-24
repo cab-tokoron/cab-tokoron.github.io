@@ -9,15 +9,18 @@
 </head>
 <body>
     <canvas id="canvas" width="250" height="250"></canvas>
-    <button id="button">run</button>
+    <div id="svg_area"></div>
     <script>
-        let content = `var smiles = "CC(=O)Oc1ccccc1C(=O)O";
-  var mol = RDKitModule.get_mol(smiles);
-  var canvas = document.getElementById("canvas");
-  mol.draw_to_canvas(canvas, -1, -1);`
-        document.getElementById("button").addEventListener("click",()=>{
-            eval(content);
-        }, false);
+        initRDKitModule().then((instance)=>{
+            RDKitModule = instance;
+            console.log("version: "+RDKitModule.version())
+        });
+        window.onload=()=>{
+            let smiles="CC(=O)Oc1ccccc1C(=O)O";
+            let mol = RDKitModule.get_mol(smiles);
+            let svg = mol.get_svg
+            document.getElementById("svg_area").innerHTML=svg;
+        };
     </script>
 </body>
 </html>
