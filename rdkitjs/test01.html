@@ -19,6 +19,8 @@
             let smiles = "CC(=O)Oc1ccccc1C(=O)O";
             let mol = RDKitModule.get_mol(smiles);
             let svg = mol.get_svg();
+            console.log("morgan_fp: " + mol.get_morgan_fp(3, 2048));
+            console.log("morgan_fp_bin: " + mol.get_morgan_fp_as_binary_text(3, 2048));
             mol.delete();
             document.getElementById("svg_area").innerHTML=svg;
         });
