@@ -8,19 +8,20 @@
     <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
 </head>
 <body>
-    <canvas id="canvas" width="250" height="250"></canvas>
-    <div id="svg_area"></div>
+    <div id="area"></div>
+    <button id="button">run</button>
     <script>
         initRDKitModule().then((instance)=>{
             RDKitModule = instance;
             console.log("version: "+RDKitModule.version())
         });
-        window.onload=()=>{
-            let smiles="CC(=O)Oc1ccccc1C(=O)O";
+        document.getElementById("button").addEventListener("click", ()=>{
+            let smiles = "CC(=O)Oc1ccccc1C(=O)O";
             let mol = RDKitModule.get_mol(smiles);
-            let svg = mol.get_svg
+            let svg = mol.get_svg();
+            mol.delete();
             document.getElementById("svg_area").innerHTML=svg;
-        };
+        });
     </script>
 </body>
 </html>
