@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
+</head>
+<body>
+    <div id="area"></div>
+    <input type="file" name="select" id="loadbtn"/>
+    <button id="button">run</button>
+    <script>
+        initRDKitModule().then((instance)=>{
+            RDKitModule = instance;
+            console.log("version: "+RDKitModule.version())
+        });
+
+        let names  = [];
+        let smiles = [];
+        let molwts = [];
+        let sols   = [];
+        let logps  = [];
+        let nhatms = [];
+
+        document.getElementById("loadbtn").addEventListener("change", (ev)=>{
+            let file = ev.target.files[0];
+            let reader = new FileReader();
+            reader.readAsText(file);
+            reader.addEventListener("load", (ev)=>{
+                names  = []; 
+                smiles = []; 
+                molwts = []; 
+                sols   = []; 
+                logps  = [];
+                nhatms = [];
+                let res = ev.target.result;
+                let lines = res.split("\n");
+                let len = lines.length
+                for (let i=1;i<len;i++){
+                    let items = lines[i].split(",");
+                    names.push(items[0]);
+                    smiles.push(items[1]);
+                    molwts.push(float(items[2]));
+                    sols.push(float(items[3]));
+                    logps.push(float(items[4]));
+                    nhatms.push(int(items[5]));
+                }
+                console.log("name: %s, smiles: %s, molwt: %f, sol: %f, logp: %f, nmhatms: %i", names[10], smiles[10], molwts[10], sols[10], logps[10],nhatms[10]);
+            },false);
+        }, false);
+        document.getElementById("button").addEventListener("click", ()=>{
+            let smiles = "CC(=O)Oc1ccccc1C(=O)O";
+            let mol = RDKitModule.get_mol(smiles);
+            let svg = mol.get_svg();
+            console.log("morgan_fp: " + mol.get_morgan_fp(3, 2048));
+            console.log("morgan_fp_bin: " + mol.get_morgan_fp_as_binary_text(3, 2048));
+            mol.delete();
+            document.getElementById("svg_area").innerHTML=svg;
+        });
+    </script>
+</body>
+</html>
