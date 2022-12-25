@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
+    
 </head>
 <body>
     <div id="area"></div>
@@ -23,6 +24,7 @@
         let sols   = [];
         let logps  = [];
         let nhatms = [];
+        let ecfp4s = [];
 
         document.getElementById("loadbtn").addEventListener("change", (ev)=>{
             let file = ev.target.files[0];
@@ -35,6 +37,7 @@
                 sols   = []; 
                 logps  = [];
                 nhatms = [];
+                ecfp4s = [];
                 let res = ev.target.result;
                 let lines = res.split("\n");
                 let len = lines.length
@@ -46,6 +49,8 @@
                     sols.push(parseFloat(items[3]));
                     logps.push(parseFloat(items[4]));
                     nhatms.push(parseInt(items[5]));
+                    let mol = RDKitModule.get_mol(items[1]);
+                    ecfp4s.push(mol.get_morgan_fp_as_uint8array(3,2048));
                 }
                 console.log("name: %s, smiles: %s, molwt: %f, sol: %f, logp: %f, nmhatms: %i", names[10], smiles[10], molwts[10], sols[10], logps[10],nhatms[10]);
             },false);
