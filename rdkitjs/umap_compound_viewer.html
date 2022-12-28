@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
+</head>
+<body>
+    <style>
+        #wrap{
+            display:flex;
+            height:100%;
+        }
+        #left_panel{
+            background-Color:"white";
+            min-width:40%;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            overflow:scroll;
+            height: 100vh;
+        }
+        #right_panel{
+            width:60%;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            background-Color:"white";
+            overflow-y:scroll;
+            height: 100vh;
+        }
+        #select_file{
+            margin: 10px 10px 10px 10px;
+        }
+    </style>
+    <div>
+        <input type="file" id="select_file" name="file"/>
+    </div>
+    <div id="wrap">
+        <div id="left_panel">
+            <div>
+                <div>化合物特徴量による2次元マッピング(UMAPによる次元圧縮)</div>
+                <canvas id="canvas" width="600" height="600"></canvas>
+            </div>
+        </div>
+        <div id="right_panel">
+            <div>選択した化合物集合の構造</div>
+            <div id="molecule_image"></div>
+         </div>
+    </div>
+    <script>
+        initRDKitModule().then((instance)=>{
+            RDKitModule = instance;
+            console.log("version: "+RDKitModule.version());
+        });
+
+        let data = [];
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let on_draw = false;
+        let sx=0, sy=0, ex=0, ey=0;
+        let imgdata = null;
+
+        document.getElementById("select_file").addEventListener("change", (ev)=>{
+            let file = ev.target.files[0];
+            let reader = new FileReader();
+            reader.readAsText(file);
+            reader.addEventListener("load", (ev)=>{
+                let res = ev.target.result;
+                let lines = res.split("\n");
+                let lenL = lines.length;
+                let columns = lines[0].split(",");
+                let lenC = columns.length;
+                for (let i=1;i<lenL;i++){
+                    let tmp = {};
+                    let items = lines[i].split(",");
+                    if (items.length==lenC){
+                        for (let j=0;j<lenC;j++){
+                            tmp[columns[j]]=items[j];
+                        }
+                        data.push(tmp);
+                    }
+                }
+                lenL = data.length;
+                console.log(data[0].UX);
+                let xmin=999, xmax=-999, ymin=999, ymax=-999;
+                for (let i=0;i<lenL;i++){
+                    let ux = parseFloat(data[i].UX);
+                    let uy = parseFloat(data[i].UY);
+                    if (xmin>ux) {xmin=ux}
+                    if (xmax<ux) {xmax=ux}
+                    if (ymin>uy) {ymin=uy}
+                    if (ymax<uy) {ymax=uy}
+                }
+                let dx = xmax-xmin, dy = ymax-ymin;
+                ctx.fillStyle="white";
+                ctx.fillRect(0,0,600,600);
+                ctx.fillStyle="rgb(232, 128, 192)";
+                ctx.strokeStyle="black";
+                ctx.strokeRect(50,50,500,500);
+                for (let i=0;i<lenL;i++){
+                    let ux = parseFloat(data[i].UX);
+                    let uy = parseFloat(data[i].UY);
+                    let x = Math.round((ux-xmin)/dx*400+100);
+                    let y = Math.round((uy-ymin)/dy*400+100);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2, true);
+                    //ctx.fillStyle = "lightskyblue";
+                    ctx.fill();
+                    //ctx.strokeStyle = 'deepskyblue';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();                
+                }
+                imgdata = ctx.getImageData(0,0,600,600);
+            });
+            
+            canvas.addEventListener("mousedown", (ev)=>{
+                on_draw = true;
+                let rect = canvas.getBoundingClientRect();
+                sx = ev.clientX - rect.left;
+                sy = ev.clientY - rect.top;
+                ctx.putImageData(imgdata,0,0);
+            });
+            canvas.addEventListener("mousemove", (ev)=>{
+                if (on_draw){
+                    let rect = canvas.getBoundingClientRect();
+                    ex = ev.clientX - rect.left;
+                    ey = ev.clientY - rect.top;
+                    ctx.strokeStyle="lime";
+                    ctx.putImageData(imgdata,0,0);
+                    ctx.strokeRect(sx,sy,ex-sx,ey-sy);
+                }
+            });
+            canvas.addEventListener("mouseup",   (ev)=>{
+                let rect = canvas.getBoundingClientRect();
+                ex = ev.clientX - rect.left;
+                ey = ev.clientY - rect.top;
+                ctx.strokeStyle="red";
+                ctx.putImageData(imgdata,0,0);
+                ctx.strokeRect(sx,sy,ex-sx,ey-sy);
+                on_draw=false;
+            });
+        });
+    </script>
+</body>
+</html>
