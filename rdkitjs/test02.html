@@ -43,14 +43,16 @@
                 let len = lines.length
                 for (let i=1;i<len;i++){
                     let items = lines[i].split(",");
-                    names.push(items[0]);
-                    smiles.push(items[1]);
-                    molwts.push(parseFloat(items[2]));
-                    sols.push(parseFloat(items[3]));
-                    logps.push(parseFloat(items[4]));
-                    nhatms.push(parseInt(items[5]));
-                    let mol = RDKitModule.get_mol(items[1]);
-                    ecfp4s.push(mol.get_morgan_fp_as_uint8array(3,2048));
+                    if(items.length==6){
+                        names.push(items[0]);
+                        smiles.push(items[1]);
+                        molwts.push(parseFloat(items[2]));
+                        sols.push(parseFloat(items[3]));
+                        logps.push(parseFloat(items[4]));
+                        nhatms.push(parseInt(items[5]));
+                        let mol = RDKitModule.get_mol(items[1]);
+                        ecfp4s.push(mol.get_morgan_fp_as_uint8array(3,2048));
+                    }
                 }
                 console.log("name: %s, smiles: %s, molwt: %f, sol: %f, logp: %f, nmhatms: %i", names[10], smiles[10], molwts[10], sols[10], logps[10],nhatms[10]);
             },false);
