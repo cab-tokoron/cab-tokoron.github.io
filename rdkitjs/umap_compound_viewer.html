@@ -63,7 +63,8 @@
         let sx=0, sy=0, ex=0, ey=0;
         let imgdata = null;
         let dx=1, dy=1;
-
+        let xmin=999, xmax=-999, ymin=999, ymax=-999;
+                
         window.addEventListener("load", ()=>{
             ctx.strokeStyle="black";
                 ctx.strokeRect(50,50,500,500);
@@ -91,7 +92,7 @@
                 }
                 lenL = data.length;
                 console.log(data[0].UX);
-                let xmin=999, xmax=-999, ymin=999, ymax=-999;
+                xmin=999, xmax=-999, ymin=999, ymax=-999;
                 for (let i=0;i<lenL;i++){
                     let ux = parseFloat(data[i].UX);
                     let uy = parseFloat(data[i].UY);
