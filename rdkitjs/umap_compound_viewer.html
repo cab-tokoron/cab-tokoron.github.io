@@ -149,6 +149,8 @@
                 let svg = "";
                 let lenL = data.length;
                 for (let i=0;i<lenL;i++){
+                    let ux = data[i].UX;
+                    let uy = data[i].UY;
                     let x = Math.round((ux-xmin)/dx*400+100);
                     let y = Math.round((uy-ymin)/dy*400+100);
                     if(x>sx && x<ex && y>sy && y<ey){
