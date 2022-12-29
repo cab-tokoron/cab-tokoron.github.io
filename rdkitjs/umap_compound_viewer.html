@@ -147,6 +147,7 @@
                 ctx.strokeStyle="red";
                 ctx.putImageData(imgdata,0,0);
                 ctx.strokeRect(sx,sy,ex-sx,ey-sy);
+                on_draw=false;
                 let svg = "";
                 let lenL = data.length;
                 for (let i=0;i<lenL;i++){
@@ -158,10 +159,11 @@
                         let smi = data[i].SMILES;
                         let mol = RDKitModule.get_mol(smi);
                         svg += mol.get_svg();
+                        mol.delete();
                     }
                 }
                 document.getElementById("molecule_image").innerHTML = svg;
-                on_draw=false;
+                
             });
         });
     </script>
