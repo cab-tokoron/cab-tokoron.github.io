@@ -62,6 +62,7 @@
         let on_draw = false;
         let sx=0, sy=0, ex=0, ey=0;
         let imgdata = null;
+        let dx=1, dy=1;
 
         window.addEventListener("load", ()=>{
             ctx.strokeStyle="black";
@@ -99,7 +100,7 @@
                     if (ymin>uy) {ymin=uy}
                     if (ymax<uy) {ymax=uy}
                 }
-                let dx = xmax-xmin, dy = ymax-ymin;
+                dx = xmax-xmin, dy = ymax-ymin;
                 ctx.fillStyle="white";
                 ctx.fillRect(0,0,600,600);
                 ctx.fillStyle="rgb(232, 128, 192)";
@@ -145,6 +146,17 @@
                 ctx.strokeStyle="red";
                 ctx.putImageData(imgdata,0,0);
                 ctx.strokeRect(sx,sy,ex-sx,ey-sy);
+                let svg = "";
+                for (let i=0;i<lenL;i++){
+                    let x = Math.round((ux-xmin)/dx*400+100);
+                    let y = Math.round((uy-ymin)/dy*400+100);
+                    if(x>sx && x<ex && y>sy && y<ey){
+                        let smi = data[i].SMILES;
+                        let mol = RDKitModule.get_mol(smi);
+                        svg += mol.get_svg();
+                    }
+                }
+                document.getElementById("molecule_image").innerHTML = svg;
                 on_draw=false;
             });
         });
