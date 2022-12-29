@@ -147,6 +147,7 @@
                 ctx.putImageData(imgdata,0,0);
                 ctx.strokeRect(sx,sy,ex-sx,ey-sy);
                 let svg = "";
+                let lenL = data.length;
                 for (let i=0;i<lenL;i++){
                     let x = Math.round((ux-xmin)/dx*400+100);
                     let y = Math.round((uy-ymin)/dy*400+100);
