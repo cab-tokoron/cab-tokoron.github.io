@@ -63,6 +63,11 @@
         let sx=0, sy=0, ex=0, ey=0;
         let imgdata = null;
 
+        window.addEventListener("load", ()=>{
+            ctx.strokeStyle="black";
+                ctx.strokeRect(50,50,500,500);
+        });
+
         document.getElementById("select_file").addEventListener("change", (ev)=>{
             let file = ev.target.files[0];
             let reader = new FileReader();
