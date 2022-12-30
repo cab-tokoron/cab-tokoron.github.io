@@ -44,6 +44,10 @@
                 <div>化合物特徴量による2次元マッピング(UMAPによる次元圧縮)</div>
                 <canvas id="canvas" width="600" height="600"></canvas>
             </div>
+            <select id="one_color"></select>
+            <select id="three_color_red"></select>
+            <select id="three_color_green"></select>
+            <select id="three_color_blue"></select>
         </div>
         <div id="right_panel">
             <div>選択した化合物集合の構造</div>
@@ -79,6 +83,11 @@
                 let lines = res.split("\n");
                 let lenL = lines.length;
                 let columns = lines[0].split(",");
+                let combo_items = "";
+                for (let i=4;i<lenC;i++){
+                    combo_items += '<option value="'+columns[i]+'">'+columns[i]+'</option>\n'
+                }
+                document.getElementById("one_color").innerHTML = combo_items;
                 let lenC = columns.length;
                 for (let i=1;i<lenL;i++){
                     let tmp = {};
