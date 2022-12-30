@@ -83,12 +83,12 @@
                 let lines = res.split("\n");
                 let lenL = lines.length;
                 let columns = lines[0].split(",");
+                let lenC = columns.length;
                 let combo_items = "";
                 for (let i=4;i<lenC;i++){
                     combo_items += '<option value="'+columns[i]+'">'+columns[i]+'</option>\n'
                 }
                 document.getElementById("one_color").innerHTML = combo_items;
-                let lenC = columns.length;
                 for (let i=1;i<lenL;i++){
                     let tmp = {};
                     let items = lines[i].split(",");
