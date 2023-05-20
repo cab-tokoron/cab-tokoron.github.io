@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var volume = 0;
+        var octave = 4;
+        window.addEventListener("load", (e)=>{
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            const ctx = new AudioContext();
+            const gainNode = ctx.createGain();
+            gainNode.gain.value = volume;
+            let osc = ctx.createOscillator();
+            osc.type = "sine";
+            osc.frequency.value = 523.251 * 2**(octave-2);
+            osc.connect(gainNode).connect(ctx.destination);
+            osc.start();
+        })
+        window.addEventListener("deviceorientation",(e)=>{
+            let curVol = Math.min(Math.abs(e.gamma),40.0)/40.0;
+            let curOct = Math.min(Math.trunc(e.beta/10,4));
+            if (curOct!=octave){
+                osc.frequency.value = 523.251 * 2**(octave-2);
+            }
+            if (curVol!=volume){
+                gainNode.gain.value = volume;
+            }
+            volume = curVol;
+            octave = curOct;
+        }, false);
+    </script>
+</body>
+</html>
