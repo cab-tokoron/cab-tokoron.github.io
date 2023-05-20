@@ -35,7 +35,7 @@
             let curVol = Math.min(Math.abs(e.gamma),40.0)/40.0;
             let curOct = Math.min(Math.trunc(-e.beta/10),4);
             if (curOct!=octave){
-                osc.frequency.value = 523.251 * 2**(octave-2);
+                osc.frequency.value = 523.251 * 2**(octave);
                 frqInfo.innerHTML = "Frq: " + osc.frequency.value.toFixed(2) + "Hz";
             }
             if (curVol!=volume){
