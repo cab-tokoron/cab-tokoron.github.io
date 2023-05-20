@@ -15,12 +15,15 @@
         const frqInfo = document.getElementById("freq");
         const volInfo = document.getElementById("volume");
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioContext();
-        const gainNode = ctx.createGain();
-        gainNode.gain.value = volume;
-        let osc = ctx.createOscillator();
-        osc.type = "sine";
+        //const ctx = new AudioContext();
+        let gainNode;
+        let osc;
         window.addEventListener("load", (e)=>{
+            ctx = new AudioContext();
+            gainNode = ctx.createGain();
+            gainNode.gain.value = volume;
+            osc = ctx.createOscillator();
+            osc.type = "sine";
             osc.frequency.value = 523.251 * 2**(octave-2);
             osc.connect(gainNode).connect(ctx.destination);
             osc.start();
