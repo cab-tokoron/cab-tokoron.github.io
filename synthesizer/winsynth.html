@@ -48,8 +48,8 @@
 
             function set_frequency(v, o){
                 let index = o*12+11-v;
-                osc.frequency.value = freqs[index];
-                frqInfo.innerHTML = "Frq: " + freqs[index].toFixed(2) + "Hz";
+                osc.frequency.value = freqs[index+3];
+                frqInfo.innerHTML = "Frq: " + freqs[index+3].toFixed(2) + "Hz";
             }
 
             ctx = new AudioContext();
