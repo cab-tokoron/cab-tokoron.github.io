@@ -9,6 +9,7 @@
 <body>
     <div id="freq"></div>
     <div id="volume"></div>
+    <button id="start">start</button>
     <script>
         var volume = 0;
         var octave = 4;
@@ -18,7 +19,8 @@
         //const ctx = new AudioContext();
         let gainNode;
         let osc;
-        window.addEventListener("load", (e)=>{
+
+        document.getElementById("start").addEventListener("click", ()=>{
             ctx = new AudioContext();
             gainNode = ctx.createGain();
             gainNode.gain.value = volume;
@@ -27,7 +29,8 @@
             osc.frequency.value = 523.251 * 2**(octave-2);
             osc.connect(gainNode).connect(ctx.destination);
             osc.start();
-        })
+        },false);
+
         window.addEventListener("deviceorientation",(e)=>{
             let curVol = Math.min(Math.abs(e.gamma),40.0)/40.0;
             let curOct = Math.min(Math.trunc(e.beta/10,4));
