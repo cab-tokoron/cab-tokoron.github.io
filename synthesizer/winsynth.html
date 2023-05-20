@@ -7,9 +7,13 @@
     <title>Document</title>
 </head>
 <body>
+    <div id="freq"></div>
+    <div id="volume"></div>
     <script>
         var volume = 0;
         var octave = 4;
+        const frqInfo = document.getElementById("freq");
+        const volInfo = document.getElementById("volume");
         window.addEventListener("load", (e)=>{
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
             const ctx = new AudioContext();
@@ -26,9 +30,11 @@
             let curOct = Math.min(Math.trunc(e.beta/10,4));
             if (curOct!=octave){
                 osc.frequency.value = 523.251 * 2**(octave-2);
+                frqInfo.innerHTML = "Frq: " + osc.frequency.value.toFixed(2) + "Hz";
             }
             if (curVol!=volume){
                 gainNode.gain.value = volume;
+                volInfo.innerHTML = "Vol: " + volume.toFixed(2);
             }
             volume = curVol;
             octave = curOct;
