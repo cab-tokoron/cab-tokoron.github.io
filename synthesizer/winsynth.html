@@ -48,22 +48,23 @@
             osc.frequency.value = 523.251 * 2**(octave-2);
             osc.connect(gainNode).connect(ctx.destination);
             osc.start();
-        },false);
+        
 
-        window.addEventListener("deviceorientation",(e)=>{
-            let curVol = Math.min(Math.abs(e.gamma),40.0)/40.0;
-            let curOct = Math.min(Math.trunc(-e.beta/10)+2,4);
-            if (curOct!=octave){
-                osc.frequency.value = 523.251 * 2**(octave);
-                frqInfo.innerHTML = "Frq: " + osc.frequency.value.toFixed(2) + "Hz";
-            }
-            if (curVol!=volume){
-                gainNode.gain.value = volume;
-                volInfo.innerHTML = "Vol: " + volume.toFixed(2);
-            }
-            volume = curVol;
-            octave = curOct;
-        }, false);
+            window.addEventListener("deviceorientation",(e)=>{
+                let curVol = Math.min(Math.abs(e.gamma),40.0)/40.0;
+                let curOct = Math.floor((90.0-e.beta)/10);
+                if (curOct!=octave){
+                    osc.frequency.value = 523.251 * 2**(octave);
+                    frqInfo.innerHTML = "Frq: " + osc.frequency.value.toFixed(2) + "Hz";
+                }
+                if (curVol!=volume){
+                    gainNode.gain.value = volume;
+                    volInfo.innerHTML = "Vol: " + volume.toFixed(2);
+                }
+                volume = curVol;
+                octave = curOct;
+            }, false);
+        },false);
     </script>
 </body>
 </html>
