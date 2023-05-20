@@ -32,6 +32,7 @@
 
         var volume = 0;
         var octave = 0;
+        var valve  = 0;
         const frqInfo = document.getElementById("freq");
         const volInfo = document.getElementById("volume");
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -40,12 +41,20 @@
         let osc;
 
         document.getElementById("start").addEventListener("click", ()=>{
+
+            function set_frequency(v, o){
+                let index = o*12+11-v;
+                osc.frequency.value = freqs[index];
+                frqInfo.innerHTML = "Frq: " + freqs[index].toFixed(2) + "Hz";
+            }
+
             ctx = new AudioContext();
             gainNode = ctx.createGain();
             gainNode.gain.value = volume;
             osc = ctx.createOscillator();
             osc.type = "sine";
-            osc.frequency.value = 523.251 * 2**(octave-2);
+            //osc.frequency.value = 523.251 * 2**(octave-2);
+            set_frequency(valve, octave);
             osc.connect(gainNode).connect(ctx.destination);
             osc.start();
         
@@ -54,8 +63,9 @@
                 let curVol = Math.min(Math.abs(e.gamma),40.0)/40.0;
                 let curOct = Math.floor((90.0-e.beta)/10);
                 if (curOct!=octave){
-                    osc.frequency.value = 523.251 * 2**(octave);
-                    frqInfo.innerHTML = "Frq: " + osc.frequency.value.toFixed(2) + "Hz";
+                    //osc.frequency.value = 523.251 * 2**(octave);
+                    set_frequency(valve, curOct);
+                    //frqInfo.innerHTML = "Frq: " + osc.frequency.value.toFixed(2) + "Hz";
                 }
                 if (curVol!=volume){
                     gainNode.gain.value = volume;
@@ -64,6 +74,15 @@
                 volume = curVol;
                 octave = curOct;
             }, false);
+
+            document.getElementById("v1").addEventListener("touchstart", (e)=>{valve+=2; set_frequency(valve, octave);},false);
+            document.getElementById("v1").addEventListener("touchend",   (e)=>{valve-=2; set_frequency(valve, octave);},false);
+            document.getElementById("v2").addEventListener("touchstart", (e)=>{valve+=1; set_frequency(valve, octave);},false);
+            document.getElementById("v2").addEventListener("touchend",   (e)=>{valve-=1; set_frequency(valve, octave);},false);
+            document.getElementById("v3").addEventListener("touchstart", (e)=>{valve+=3; set_frequency(valve, octave);},false);
+            document.getElementById("v3").addEventListener("touchend",   (e)=>{valve-=3; set_frequency(valve, octave);},false);
+            document.getElementById("v4").addEventListener("touchstart", (e)=>{valve+=5; set_frequency(valve, octave);},false);
+            document.getElementById("v4").addEventListener("touchend",   (e)=>{valve-=5; set_frequency(valve, octave);},false);
         },false);
     </script>
 </body>
