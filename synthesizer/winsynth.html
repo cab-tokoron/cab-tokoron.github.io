@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Document</title>
 </head>
 <body>
-    <div id="freq"></div>
-    <div id="volume"></div>
-    <button id="start">start</button>
-    <div>
-        <span><img id="v1" src="button.png"></span>
-        <span><img id="v4" src="button.png"></span>
-    </div>
-    <div>
-        <div><img id="v2" src="button.png"></div>
-        <div><img id="v3" src="button.png"></div>
-    </div>
+    <div align="center">
+        <div id="freq"></div>
+        <div id="volume"></div>
+        <button id="start">start</button>
+        <div>
+            <span><img id="v1" src="button.png"></span>
+            <span><img id="v4" src="button.png"></span>
+        </div>
+        <div>
+            <div><img id="v2" src="button.png"></div>
+            <div><img id="v3" src="button.png"></div>
+        </div>
+        </div>
     <script>
+        document.addEventListener("contextmenu", ()=>{event.preventDefault();});
+
         const freqs = [
               27.50,   29.14,   30.87,   32.70,   34.65,   36.71,   38.89,   41.20,   43.65,   46.25,   49.00,   51.91,
               55.00,   58.27,   61.74,   65.41,   69.30,   73.42,   77.78,   82.41,   87.31,   92.50,   98.00,  103.83,
