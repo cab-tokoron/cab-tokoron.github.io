@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <div>
+            <div>
+                重層サイン波音源の再生
+            </div>
+            <br/>
+            <div>
+                <span>
+                    <input type="checkbox" id="check_osc01" checked/>
+                    <label for="check_osc01">Oscil.01: </label>
+                    <input type="text" id="freq_01" value="100" style="width:5em"/>
+                    <label for="freq_01"> (Hz)</label>
+                    <input type="range" id="range_01" min="0" max="100" value="100"/>
+                    <label for="range_01" id="range_label_01">100</label>
+                </span>
+            </div>
+            <div>
+                <span>
+                    <input type="checkbox" id="check_osc02" checked/>
+                    <label for="check_osc02">Oscil.02: </label>
+                    <input type="text" id="freq_02" value="500" style="width:5em"/>
+                    <label for="freq_02"> (Hz)</label>
+                    <input type="range" id="range_02" min="0" max="100" value="100"/>
+                    <label for="range_02" id="range_label_02">100</label>
+                </span>
+            </div>
+            <div>
+                <span>
+                    <input type="checkbox" id="check_osc03" checked/>
+                    <label for="check_osc03">Oscil.03: </label>
+                    <input type="text" id="freq_03" value="700" style="width:5em"/>
+                    <label for="freq_03"> (Hz)</label>
+                    <input type="range" id="range_03" min="0" max="100" value="100"/>
+                    <label for="range_03" id="range_label_03">100</label>
+                </span>
+            </div>
+            <div>
+                <span>
+                    <input type="checkbox" id="check_osc04" checked/>
+                    <label for="check_osc04">Oscil.04: </label>
+                    <input type="text" id="freq_04" value="1000" style="width:5em"/>
+                    <label for="freq_04"> (Hz)</label>
+                    <input type="range" id="range_04" min="0" max="100" value="100"/>
+                    <label for="range_04" id="range_label_04">100</label>
+                </span>
+            </div>
+            <div>
+                <span>
+                    <input type="checkbox" id="check_osc05" checked/>
+                    <label for="check_osc05">Oscil.05: </label>
+                    <input type="text" id="freq_05" value="1500" style="width:5em"/>
+                    <label for="freq_05"> (Hz)</label>
+                    <input type="range" id="range_05" min="0" max="100" value="100"/>
+                    <label for="range_05" id="range_label_05">100</label>
+                </span>
+            </div>
+            <div>
+                <span>
+                    <input type="checkbox" id="check_osc06" checked/>
+                    <label for="check_osc06">Oscil.06: </label>
+                    <input type="text" id="freq_06" value="2000" style="width:5em"/>
+                    <label for="freq_06"> (Hz)</label>
+                    <input type="range" id="range_06" min="0" max="100" value="100"/>
+                    <label for="range_06" id="range_label_06">100</label>
+                </span>
+            </div>
+        </div>
+        <br/>
+        <div style="text-align: center;">
+            <span>
+                <button id="button_start">START</button>
+                <button id="button_stop">STOP</button>
+            </span>
+        </div>
+    </div>
+    <script>
+        var osc01 = null;
+        var osc02 = null;
+        var osc03 = null;
+        var osc04 = null;
+        var osc05 = null;
+        var osc06 = null;
+
+        var vol01 = 0.1;
+        var vol02 = 0.1;
+        var vol03 = 0.1;
+        var vol04 = 0.1;
+        var vol05 = 0.1;
+        var vol06 = 0.1;
+        
+        function change_state(flag){
+            document.getElementById("check_osc01").disabled = flag;
+            document.getElementById("freq_01").disabled = flag;
+            document.getElementById("range_01").disabled = flag;
+            document.getElementById("check_osc02").disabled = flag;
+            document.getElementById("freq_02").disabled = flag;
+            document.getElementById("range_02").disabled = flag;
+            document.getElementById("check_osc03").disabled = flag;
+            document.getElementById("freq_03").disabled = flag;
+            document.getElementById("range_03").disabled = flag;
+            document.getElementById("check_osc04").disabled = flag;
+            document.getElementById("freq_04").disabled = flag;
+            document.getElementById("range_04").disabled = flag;
+            document.getElementById("check_osc05").disabled = flag;
+            document.getElementById("freq_05").disabled = flag;
+            document.getElementById("range_05").disabled = flag;
+            document.getElementById("check_osc06").disabled = flag;
+            document.getElementById("freq_06").disabled = flag;
+            document.getElementById("range_06").disabled = flag;
+        }
+
+        document.getElementById("button_start").addEventListener("click", ()=>{
+            let freq_01 = parseFloat(document.getElementById("freq_01").value);
+            let freq_02 = parseFloat(document.getElementById("freq_02").value);
+            let freq_03 = parseFloat(document.getElementById("freq_03").value);
+            let freq_04 = parseFloat(document.getElementById("freq_04").value);
+            let freq_05 = parseFloat(document.getElementById("freq_05").value);
+            let freq_06 = parseFloat(document.getElementById("freq_06").value);
+
+            var audioctx = new AudioContext();
+            if (check_osc01.checked){
+                osc01 = new OscillatorNode(audioctx);
+                osc01.type = "sine";
+                osc01.frequency.value = freq_01;
+                var gain = new GainNode(audioctx);
+                gain.gain.value = vol01;
+                osc01.connect(gain).connect(audioctx.destination);
+                osc01.start();
+            }
+            if (check_osc02.checked){
+                osc02 = new OscillatorNode(audioctx);
+                osc02.type = "sine";
+                osc02.frequency.value = freq_02;
+                var gain = new GainNode(audioctx);
+                gain.gain.value = vol02;
+                osc02.connect(gain).connect(audioctx.destination);
+                osc02.start();
+            }
+            if (check_osc03.checked){
+                osc03 = new OscillatorNode(audioctx);
+                osc03.type = "sine";
+                osc03.frequency.value = freq_03;
+                var gain = new GainNode(audioctx);
+                gain.gain.value = vol03;
+                osc03.connect(gain).connect(audioctx.destination);
+                osc03.start();
+            }
+            if (check_osc04.checked){
+                osc04 = new OscillatorNode(audioctx);
+                osc04.type = "sine";
+                osc04.frequency.value = freq_04;
+                var gain = new GainNode(audioctx);
+                gain.gain.value = vol04;
+                osc04.connect(gain).connect(audioctx.destination);
+                osc04.start();
+            }
+            if (check_osc05.checked){
+                osc05 = new OscillatorNode(audioctx);
+                osc05.type = "sine";
+                osc05.frequency.value = freq_05;
+                var gain = new GainNode(audioctx);
+                gain.gain.value = vol05;
+                osc05.connect(gain).connect(audioctx.destination);
+                osc05.start();
+            }
+            if (check_osc06.checked){
+                osc06 = new OscillatorNode(audioctx);
+                osc06.type = "sine";
+                osc06.frequency.value = freq_06;
+                var gain = new GainNode(audioctx);
+                gain.gain.value = vol06;
+                osc06.connect(gain).connect(audioctx.destination);
+                osc06.start();
+            }
+            change_state(true);
+        });
+        document.getElementById("button_stop").addEventListener("click", ()=>{
+            if (osc01){
+                osc01.stop();
+            }
+            if (osc02){
+                osc02.stop();
+            }
+            if (osc03){
+                osc03.stop();
+            }
+            if (osc04){
+                osc04.stop();
+            }
+            if (osc05){
+                osc05.stop();
+            }
+            if (osc06){
+                osc06.stop();
+            }
+            change_state(false);
+        });
+        document.getElementById("range_01").addEventListener("change", (e)=>{
+            document.getElementById("range_label_01").innerHTML = String(e.target.value).padStart(3,0);
+            vol01 = e.target.value / 1000;
+        });
+        document.getElementById("range_02").addEventListener("change", (e)=>{
+            document.getElementById("range_label_02").innerHTML = String(e.target.value).padStart(3,0);
+            vol02 = e.target.value / 1000;
+        });
+        document.getElementById("range_03").addEventListener("change", (e)=>{
+            document.getElementById("range_label_03").innerHTML = String(e.target.value).padStart(3,0);
+            vol03 = e.target.value / 1000;
+        });
+        document.getElementById("range_04").addEventListener("change", (e)=>{
+            document.getElementById("range_label_04").innerHTML = String(e.target.value).padStart(3,0);
+            vol04 = e.target.value / 1000;
+        });
+        document.getElementById("range_05").addEventListener("change", (e)=>{
+            document.getElementById("range_label_05").innerHTML = String(e.target.value).padStart(3,0);
+            vol05 = e.target.value / 1000;
+        });
+        document.getElementById("range_06").addEventListener("change", (e)=>{
+            document.getElementById("range_label_06").innerHTML = String(e.target.value).padStart(3,0);
+            vol06 = e.target.value / 1000;
+        });
+    </script>
+</body>
+</html>
