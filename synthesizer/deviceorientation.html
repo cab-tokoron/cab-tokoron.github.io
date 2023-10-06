@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scslableno">
+	<title></title>
+</head>
+<body>
+	<div style="user-select: none;">
+		<div>
+			<div id="alpha"></div>
+			<div id="beta"></div>
+			<div id="gamma"></div>
+			<div id="volume"></div>
+			<div id="octave"></div>
+			<div id="note_index"></div>
+		</div>
+		<div>
+			<span>
+				<button id="start">start</button>
+				<button id="stop">stop</button>
+			</span>
+		</div>
+		<svg width="490" height="720" style="background-color: rgb(56,56,56); ">
+			<circle id="v1" cx="100" cy="200" r="80" stroke="black" fill="#bea044" ontouchstart="touchStart(2, event)" ontouchend="touchEnd(2, event)"/>
+			<circle id="v2" cx="100" cy="400" r="80" stroke="black" fill="#bea044" ontouchstart="touchStart(1, event)" ontouchend="touchEnd(1, event)"/>
+			<circle id="v3" cx="100" cy="600" r="80" stroke="black" fill="#bea044" ontouchstart="touchStart(3, event)" ontouchend="touchEnd(3, event)"/>
+			<circle id="v4" cx="400" cy="200" r="80" stroke="black" fill="#bea044" ontouchstart="touchStart(5, event)" ontouchend="touchEnd(5, event)"/>
+		</svg>
+	</div>
+	<script type="text/javascript">
+		let alpha  = document.getElementById("alpha");
+		let beta   = document.getElementById("beta");
+		let gamma  = document.getElementById("gamma");
+		let volume = document.getElementById("volume");
+		let ovtave = document.getElementById("octave");
+		let index  = document.getElementById("note_index");
+		var ctx;
+		var osc;
+		var gain;
+		var vol = 0;
+		var oct = 3;
+		var valve = 0;
+		var prevol = 0;
+		var note_index = 0
+		
+		const freqs = [
+			  34.6,   36.7,   38.9,   41.2,   43.7,   46.2,   49.0,   51.9,   55.0,   58.3,   61.7,   65.4,
+			  69.3,   73.4,   77.8,   82.4,   87.3,   92.5,   98.0,  103.8,  110.0,  116.5,  123.5,  130.8,
+			 138.6,  146.8,  155.6,  164.8,  174.6,  185.0,  196.0,  207.7,  220.0,  233.1,  246.9,  261.6,
+			 277.2,  293.7,  311.1,  329.6,  349.2,  370.0,  392.0,  415.3,  440.0,  466.2,  493.9,  523.3,
+			 554.4,  587.3,  622.3,  659.3,  698.5,  740.0,  784.0,  830.6,  880.0,  932.3,  987.8, 1046.5,
+			1108.7, 1174.7, 1244.5, 1318.5, 1396.9, 1480.0, 1568.0, 1661.2, 1760.0, 1864.7, 1975.5, 2093.0,
+			2217.5, 2349.3, 2489.0, 2637.0, 2793.8, 2960.0, 3136.0, 3322.4, 3520.0, 3729.3, 3951.1, 4186.0
+		];
+		
+		window.addEventListener("deviceorientation", (e)=>{
+			alpha.innerHTML = "alpha = " + e.alpha.toFixed(1);
+			beta.innerHTML  = "beta  = " + e.beta.toFixed(1);
+			gamma.innerHTML = "gamma = " + e.gamma.toFixed(1);
+			vol = (50 - e.beta)/40;
+			if(vol>1){
+				vol = 1.0;
+			}
+			else if(vol<0){
+				vol = 0;
+			}
+			volume.innerHTML = "volume = " + vol.toFixed(2);
+			if (vol != prevol){
+				if(gain){
+					gain.gain.value = vol;
+				}
+			}
+			prevol = vol;
+			oct = -(-20 - e.gamma)/40 * 6;
+			if(oct<0){
+				oct = 0;
+			}
+			else if(oct>6){
+				oct = 6;
+			}
+			octave.innerHTML = "octave = " + oct.toFixed(0);
+		});
+		
+		document.getElementById("start").addEventListener("click", ()=>{
+			ctx  = new AudioContext();
+			osc  = ctx.createOscillator();
+			osc.type = "sawtooth";
+			osc.frequency.value = 440;
+			gain = ctx.createGain();
+			gain.gain.value = 0;
+			osc.connect(gain).connect(ctx.destination);
+			osc.start();
+		});
+		document.getElementById("stop").addEventListener("click", ()=>{
+			osc?.stop();
+		});
+		
+		function touchStart(num, event){
+			valve = valve + num;
+			note_index = oct * 13 + 12 - valve;
+			index.innerHTML = "Note index = " + note_index;
+			if(osc){
+				osc.frequency.value = freqs[note_index];
+			}
+		}
+		
+		function touchEnd(num, event){
+			valve = valve - num;
+			note_index = oct * 13 + 12 - valve;
+			if(osc){
+				osc.frequency.value = freqs[note_index];
+			}
+		}
+	</script>
+</body>
+</html>
