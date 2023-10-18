@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--script src="web-bluetooth.js"></script-->
+</head>
+<body>
+    <h1>Wii Balance Board Data</h1>
+    <p id="topLeft">Top Left: </p>
+    <p id="topRight">Top Right: </p>
+    <p id="bottomLeft">Bottom Left: </p>
+    <p id="bottomRight">Bottom Right: </p>
+    <p id="totalWeight">Total Weight: </p>
+    <button id="connectButton">Connect</button>
+    <script>
+        const WII_BALANCE_BOARD_SERVICE_UUID = "0000181b-0000-1000-8000-00805f9b34fb";
+        const WII_BALANCE_BOARD_DATA_CHARACTERISTIC_UUID = "00002a4b-0000-1000-8000-00805f9b34fb";
+
+        var balanceBoardDevice = null;
+        var balanceBoardDataCharacteristic = null;
+
+        var connectButton = document.getElementById("connectButton");
+        connectButton.addEventListener("click", ()=>{
+
+        
+            if (!navigator.bluetooth) {
+                alert("Web Bluetooth is not supported by this browser.");
+                return;
+            }
+            navigator.bluetooth.requestDevice({
+                filters: [{
+                services: [WII_BALANCE_BOARD_SERVICE_UUID]
+                }]
+            })
+            .then(device => {
+                balanceBoardDevice = device;
+                return device.gatt.connect();
+            })
+            .then(server => {
+                return server.getPrimaryService(WII_BALANCE_BOARD_SERVICE_UUID);
+            })
+            .then(service => {
+                return service.getCharacteristic(WII_BALANCE_BOARD_DATA_CHARACTERISTIC_UUID);
+            })
+            .then(characteristic => {
+                balanceBoardDataCharacteristic = characteristic;
+                return characteristic.startNotifications();
+            })
+            .then(() => {
+                balanceBoardDataCharacteristic.addEventListener("characteristicvaluechanged", handleBalanceBoardData);
+                console.log("Connected to Wii Balance Board");
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+
+        function handleBalanceBoardData(event) {
+            var data = event.target.value;
+            var topLeft = data.getUint16(0, true) / 100;
+            var topRight = data.getUint16(2, true) / 100;
+            var bottomLeft = data.getUint16(4, true) / 100;
+            var bottomRight = data.getUint16(6, true) / 100;
+            var totalWeight = topLeft + topRight + bottomLeft + bottomRight;
+
+            document.getElementById("topLeft").innerHTML = "Top Left: " + topLeft;
+            document.getElementById("topRight").innerHTML = "Top Right: " + topRight;
+            document.getElementById("bottomLeft").innerHTML = "Bottom Left: " + bottomLeft;
+            document.getElementById("bottomRight").innerHTML = "Bottom Right: " + bottomRight;
+            document.getElementById("totalWeight").innerHTML = "Total Weight: " + totalWeight;
+        }
+    </script>  
+</body>
+</html>
