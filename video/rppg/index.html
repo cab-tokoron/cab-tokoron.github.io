@@ -1,1 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rPPG</title>
+</head>
+<body>
+    <style>
+        td {
+            text-align: center; 
+            vertical-align: middle;
+        }
+        .narrow {
+            width: 10em;
+        }
+        .wide {
+            width: 20em;
+        }
+        .center{
+            text-align: center;
+        }
+    </style>
+    <div>
+        <video id="video" width="640" height="480" hidden></video>
+        <div class="center">
+            <h2>Remote Photoplethysmography</h2>
+        </div>
+            <table>
+            <tr>
+                <td>
+                    <div id="info">画面中央に顔を合わせて、鼻の頭をクリックして測定開始します。</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <canvas id="canvas" width="640" height="480"></canvas>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <canvas id="graph"  width="600" height="200"></canvas>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td class="wide">
+                    <input type="checkbox" id="savedata" name="savedata" checked>
+                    <label for="savedata">波形データを保存する</label>
+                </td>
+                <td class="wide">
+                    <h3><div id="beatFreq"></div></h3>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        //--------------------//
+        //  定数・変数の定義   //
+        //--------------------//
+        
+        /*
+        < グローバル定数宣言 >
+        */
+        const video = document.getElementById("video");                       // videoエレメント: 表示はしない
+        const canvas = document.getElementById("canvas");                     // videoを表示するためのcanvasエレメント
+        const context = canvas.getContext("2d", {willReadFrequently: true});  // canvasのデータを取得するcontext
+        const graph = document.getElementById("graph");                       // graph表示のためのcanvasエレメント
+        const grctx = graph.getContext("2d");                                 // graphデータを扱うためのcontext
+        const L = 7;                                                          // 移動平均のデータ点数
 
+        /*
+        < グローバル変数宣言 >
+        */
+        let on_rec = false;   // 測定中のフラグ変数
+        let dispCount = 0;    // 測定中のグラフ表示カウンター
+        let timeCount = 0;    // 測定中のタイマーカウンター
+        let ga = [];          // 画像の所定領域の緑チャンネルの平均値を保持する配列：個数＝Lの配列
+        let gfa = [];         // gaから算出した移動平均を差し引いた緑チャンネル平均値を保持するノイズ除去用の配列：個数＝5の配列
+        let ba = [];          // 心拍数を10回分保持する配列変数：平均値を表示するため
+        let cx = 0;           // 画像の所定領域の中心のx座標：鼻の頭の座標
+        let cy = 0;           // 同上のy座標
+        let pBT = 0;          // 前回の拍動のタイマーカウンタを保持する変数
+        let result = "";      // 測定結果を文字列で保持する変数
+        let fname = "";       // 測定結果を保存する際の測定開始日時を元にしたファイル名
+
+
+        //--------------//
+        //  関数の定義   //
+        //--------------//
+        
+        /*
+        < 判定式の関数定義 >
+        */
+        const greaterThan = (a, b) => a > b;  // a>bの判定条件を定義する関数
+        const lessThan = (a, b) => a < b;     // a<bの判定条件を定義する関数
+
+        /*
+        < video映像を取得した際に実行する関数 >
+        */
+        const processFrame = (now, metadata)=>{   
+            context.save();         // 左右反転の前にcontextを保存
+            context.scale(-1, 1);   // xのスケールを-1とすることで、左右を反転：鏡面対象としたいため
+            context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+            context.restore();      // 左右対称にしたので、元のcontextに戻す
+            
+            // フラグが測定中の時
+            if(on_rec){
+                // 解析対象領域を算出
+                const sx = Math.max(0, cx-80);
+                const sy = Math.max(0, cy-40);
+                const ex = Math.min(canvas.width, cx+80);
+                const ey = Math.min(canvas.height, cy+40);
+                const area = (ex-sx)*(ey-sy);
+                const data = context.getImageData(sx, sy, (ex-sx), (ey-sy)).data;
+
+                let g = 0;  // 解析対象領域の緑チャンネルの値を保持する変数：0で初期化                
+                for (let i=0; i<data.length; i+=4){
+                    g += data[i+1];
+                }
+                g /= area;  // 平均値を算出
+
+                // 配列の要素数がそろうまではgaにgの値を単純に付加していく
+                if(ga.length<L){
+                    ga.push(g);
+                }
+                // 配列の要素数がそろったら平均値を算出してトレンド補正を行い、タイマーカウントを0にセット
+                else if(ga.length==L){
+                    ga.push(g);
+                    const avg = ga.reduce((sum, value) => sum + value, 0) / ga.length;      // トレンド補正のためL点の緑チャンネル要素を平均
+                    gfa.push(g-avg); // トレンド平均を差し引いてgfaに付加
+                    timeCount = 0;   // タイマカウンタを初期化
+                }
+                // 要素数がそろった以降の処理
+                else{
+                    ga.push(g);      // 緑チャンネルの値を付加
+                    ga.shift();      // 個数がL+1になってしまうので、先頭の余剰の要素を除去
+
+                    const avg = ga.reduce((sum, value) => sum + value, 0) / ga.length;      // トレンド補正のためL点の緑チャンネル要素を平均
+                    let gfavg = gfa.reduce((sum, value) => sum + value, 0) / gfa.length;    // ノイズ除去用の5点配列データの平均値を算出
+                    
+                    // 拍動グラフを描画
+                    grctx.beginPath();                                                      // パスの描画を開始
+                    grctx.moveTo((dispCount-L)*2, 200-Math.round((gfavg+0.6)/1.2*200));     // 前回の拍動値に移動
+                    
+                    gfa.push(g-avg);    // 今回分の緑チャンネルの値をノイズ除去用の配列に付加
+                    if(gfa.length>5){   // 所定の個数(5)を超えたら余剰の先頭の要素を除去
+                        gfa.shift();
+                    }
+
+                    // 拍動の谷を検出するための条件式：配列として算出
+                    const conditions = [
+                        ()=>greaterThan(gfa[0], gfa[2]),
+                        ()=>greaterThan(gfa[4], gfa[2]),
+                        ()=>lessThan(gfa[0], 0),
+                        ()=>lessThan(gfa[1], 0),
+                        ()=>lessThan(gfa[2], 0),
+                        ()=>lessThan(gfa[3], 0),
+                        ()=>lessThan(gfa[4], 0)
+                    ];
+
+                    gfavg = gfa.reduce((sum, value) => sum + value, 0) / gfa.length;          // 今回の拍動値を算出
+                    grctx.lineTo((dispCount-L+1)*2, 200-Math.round((gfavg+0.6)/1.2*200));     // 今回の拍動値まで直線を引く
+                    grctx.stroke();                                                           // strokeしてパスの描画を終了
+                    
+                    // 今回分のデータを記録
+                    result += (timeCount/30.0).toFixed(2)+","+gfavg.toFixed(4)+"\n";       
+
+                    // 心拍数を算出
+                    // 拍動の谷の条件式をすべて満たした場合に行う
+                    if (conditions.every(test => test())){
+                        const tBT = timeCount;  
+                        if(tBT-pBT>10){
+                            const beatFreq = 60000.0/((tBT-pBT)*1000/30);                      // 心拍数を算出
+                            ba.push(beatFreq);                                                 // 平均値算出用心拍数配列に付加
+                            // 配列の数がそろったら行う
+                            if(ba.length>5){
+                                ba.shift();                                                    // 余剰の先頭の要素を除去
+                                const btavg = ba.reduce((sum, value) => sum + value, 0) / 5;   // 心拍数の平均値を算出
+                                const beatStr  = `心拍数：${btavg.toFixed(1)}`;              // 心拍数文字列を生成
+                                document.getElementById("beatFreq").innerHTML = beatStr;       // 心拍数を表示
+                            }
+                            pBT = tBT;                                                         // 今回のタイマカウンタを前回分として保持
+                        }
+                    }
+                }
+                timeCount++;     // タイマカウンタをインクリメント
+                dispCount++;     // グラフ表示用カウンタをインクリメント
+
+                // 表示が右端まで来たらグラフを初期化し、表示用カウンタを0に戻す
+                if(dispCount==300+L){
+                    grctx.fillRect(0,0,600,200);
+                    dispCount=0;
+                }
+            }
+            // 次のフレームをコールバックしてvideo画像の処理を行う
+            video.requestVideoFrameCallback(processFrame);
+        };
+
+        /* 
+        < canvasをクリック/タッチして測定の開始・停止をする際の関数 >
+        */
+        const measureEvent = (event)=>{
+            on_rec = !on_rec;   // クリックによりフラグを反転
+            // フラグが測定中になった時の処理
+            if(on_rec){
+                // PC向け：マウスでクリックしてボタンが上がった場合のクリック座標を取得
+                if (event.type === 'mouseup') {
+                    // マウスイベントの場合
+                    cx = event.clientX;
+                    cy = event.clientY;
+                // スマホ向け：タッチした指が離れた場合のタッチ座標を取得
+                } else if (event.type === 'touchend') {
+                    // タッチイベントの場合
+                    event.preventDefault(); // touchendと同時にmouseupも発火するので、それを抑制
+                    if (event.changedTouches && event.changedTouches.length > 0) {
+                        // 多点タッチできるので、最初の座標を取得
+                        cx = event.changedTouches[0].clientX;  
+                        cy = event.changedTouches[0].clientY;
+                    }
+                }
+                console.log(`cx: ${cx}, cy: ${cy}`);  // 座標をコンソールに出力：デバッグ用
+                dispCount = 0;                        // 測定開始するため表示カウンタを初期値0に
+                timeCount = 0;                        // 同上でタイマカウンタを0に
+                pBT = 0;                              // 前回の拍動の谷を検出したカウンタ値を0に初期化
+                ba  = [];                             // 心拍数の平均値算出用の配列を初期化
+                grctx.fillRect(0,0,600,200);          // グラフ領域を黒く塗りつぶして初期化
+                result = "Time(sec),Beat\n";          // 保存する結果文字列を初期化
+
+                // 測定中であることを画面に表示
+                document.getElementById("info").innerHTML="測定中です。画面をクリックして終了します。";               
+                
+                // 測定開始時刻から保存するファイル名を設定
+                const now = new Date();               // 現在の時刻を取得
+                // 各部分を取得し、必要に応じてゼロ埋めする
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるため+1
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                // ファイル名を生成
+                fname = `${year}${month}${day}${hours}${minutes}${seconds}.csv`;
+            }
+            // フラグが測定終了になった時の処理
+            else{
+                if(document.getElementById("savedata").checked){
+                    // 測定結果(result)をcsvファイルとしてダウンロードするための処理
+                    const blob = new Blob([result], {type: "text/csv;charset=utf-8;"});  // resultをblobとして準備
+                    const url  = window.URL.createObjectURL(blob);                       // blob用のダウンロード先のurlを生成
+                    const a = document.createElement("a");                               // リンクエレメント<a>を生成
+                    document.body.appendChild(a);                                        // <a>をdocument.bodyに追加
+                    a.style = "display:none";                                            // <a>は表示しない
+                    a.href = url;                                                        // <a>のリンク先にurlを設定
+                    a.download = fname;                                                  // <a>を先ほど生成したファイル名でダウンロードできるようにする
+                    a.click();                                                           // <a>をクリックして自動でダウンロード
+                    window.URL.revokeObjectURL(url);                                     // ダウンロードしたのでurlオブジェクトを除去
+                    a.remove();                                                          // 生成した<a>を除去
+                    alert("データを " + fname + "というファイル名で保存しました。");         // 保存したことをアラートで表示
+                }
+                // 保存が完了したので、測定開始の説明に戻す
+                document.getElementById("info").innerHTML="画面中央に顔を合わせて、鼻の頭をクリックして測定開始します。";
+            }
+        };
+
+        /*
+        < canvasにクリック・タッチした際のイベントリスナーに上記で定義したmeasureEvent関数を割り当てる >
+        */
+        document.getElementById("canvas").addEventListener("mouseup",  measureEvent);
+        document.getElementById("canvas").addEventListener("touchend", measureEvent);
+
+        /*
+        < videoを有効にして準備する >
+        */
+        navigator.mediaDevices.getUserMedia({video: {facingMode:"user"}})      // mediaDevicesからuserMedia：videoを取得 
+        // userMediaが取得できたら次に行う
+        .then(stream => {
+            // グラフ用のcontextの初期化
+            grctx.fillStyle="black";       // 塗りつぶし色を黒に設定
+            grctx.strokeStyle="lime";      // グラフの折れ線の色を緑に設定
+            grctx.lineWidth=2;             // グラフの折れ線の太さを2に設定
+            grctx.lineCap = "round";       // 滑らかに折れ線がつながるように線の両端を丸に設定
+            grctx.fillRect(0,0,600,200);   // グラフのcanvasを黒く塗りつぶす
+            // videoエレメントの設定
+            video.srcObject = stream;      // videoに表示するソースにstreamを設定
+            video.play();                  // videoの表示を開始
+            // videoのメタデータが得られたら行う
+            video.addEventListener("loadedmetadata", ()=>{
+                canvas.width = video.videoWidth;      // 映像表示用のcanvasの幅をvideoの幅に設定
+                canvas.height = video.videoHeight;    // 同上：canvasの高さをvideoの高さに設定
+                // 初回のvideo映像の画像取得のコールバックを行う
+                video.requestVideoFrameCallback(processFrame);
+            });
+        })
+        // エラーが発生した場合の処理
+        .catch(err => {
+            console.error("Error", err);
+        });
+        
+    </script>
+</body>
+</html>
